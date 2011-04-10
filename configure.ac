@@ -56,11 +56,6 @@ PKG_CHECK_MODULES(IBUS, [
     ibus-1.0 >= 1.3.0
 ])
 
-# check tutcode
-PKG_CHECK_MODULES(ENCHANT, [
-    tutcode
-])
-
 
 #check python
 AM_PATH_PYTHON([2.5])
