@@ -76,6 +76,7 @@ ibus-tutcode.spec
 engine/Makefile
 engine/ibus-engine-tutcode
 engine/tutcode.xml.in
+setup/Makefile
 icons/Makefile
 m4/Makefile
 )
