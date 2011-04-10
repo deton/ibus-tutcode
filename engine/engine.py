@@ -20,13 +20,13 @@
 
 import gobject
 import pango
-import enchant
+import tutcode
 import ibus
 from ibus import keysyms
 from ibus import modifier
 
 class Engine(ibus.EngineBase):
-    __dict = enchant.Dict("en")
+    __dict = tutcode.Dict("en")
 
     def __init__(self, bus, object_path):
         super(Engine, self).__init__(bus, object_path)

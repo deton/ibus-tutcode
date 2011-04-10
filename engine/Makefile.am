@@ -18,16 +18,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-engine_enchant_PYTHON = \
+engine_tutcode_PYTHON = \
 	engine.py \
 	factory.py \
 	main.py \
 	$(NULL)
-engine_enchantdir = $(datadir)/ibus-tutcode
+engine_tutcodedir = $(datadir)/ibus-tutcode
 
-bin_SCRIPTS = ibus-engine-enchant
+bin_SCRIPTS = ibus-engine-tutcode
 
-component_DATA = enchant-python.xml
+component_DATA = tutcode-python.xml
 componentdir = $(datadir)/ibus/component
 
 CLEANFILES = \
@@ -35,11 +35,11 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	ibus-engine-enchant.in \
-	enchant-python.xml.in.in \
+	ibus-engine-tutcode.in \
+	tutcode-python.xml.in.in \
 	$(NULL)
 
-enchant-python.xml: enchant-python.xml.in
+tutcode-python.xml: tutcode-python.xml.in
 	$(AM_V_GEN) \
 	( \
 		libexecdir=${libexecdir}; \

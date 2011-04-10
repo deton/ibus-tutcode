@@ -1,6 +1,6 @@
 # vim:set et ts=4:
 #
-# ibus-tmpl - The Input Bus template project
+# ibus-tutcode - The TUT-Code engine for IBus
 #
 # Copyright (c) 2007-2011 Peng Huang <shawn.p.huang@gmail.com>
 #
@@ -19,7 +19,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # if not 1, append datestamp to the version number.
-m4_define([package_name], [ibus-tmpl])
+m4_define([package_name], [ibus-tutcode])
 m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [2])
@@ -56,9 +56,9 @@ PKG_CHECK_MODULES(IBUS, [
     ibus-1.0 >= 1.3.0
 ])
 
-# check enchant
+# check tutcode
 PKG_CHECK_MODULES(ENCHANT, [
-    enchant
+    tutcode
 ])
 
 
@@ -77,12 +77,12 @@ AM_GNU_GETTEXT_VERSION(0.16.1)
 # OUTPUT files
 AC_CONFIG_FILES(po/Makefile.in
 Makefile
-ibus-tmpl.spec
+ibus-tutcode.spec
 src/Makefile
-src/enchant.xml.in
+src/tutcode.xml.in
 engine/Makefile
-engine/ibus-engine-enchant
-engine/enchant-python.xml.in
+engine/ibus-engine-tutcode
+engine/tutcode-python.xml.in
 icons/Makefile
 m4/Makefile
 )

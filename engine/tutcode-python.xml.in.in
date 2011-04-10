@@ -1,25 +1,25 @@
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
-<!-- filename: enchant.xml -->
+<!-- filename: tutcode.xml -->
 <component>
-	<name>org.freedesktop.IBus.EnchantPython</name>
-	<description>Enchant Python Component</description>
-	<exec>${libexecdir}/ibus-engine-enchant --ibus</exec>
+	<name>org.freedesktop.IBus.TUTCodePython</name>
+	<description>TUT-Code Python Component</description>
+	<exec>${libexecdir}/ibus-engine-tutcode --ibus</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>
 	<homepage>http://code.google.com/p/ibus</homepage>
-	<textdomain>ibus-enchant</textdomain>
+	<textdomain>ibus-tutcode</textdomain>
 
 	<engines>
 		<engine>
-			<name>enchant-python</name>
-			<language>en</language>
+			<name>tutcode-python</name>
+			<language>ja</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<icon>${pkgdatadir}/icons/ibus-enchant.png</icon>
-			<layout>us</layout>
-			<longname>Enchant</longname>
-			<description>Enchant Input Method</description>
+			<icon>${pkgdatadir}/icons/ibus-tutcode.png</icon>
+			<layout>jp</layout>
+			<longname>TUTCode</longname>
+			<description>TUT-Code Input Method</description>
 			<rank>0</rank>
 		</engine>
 	</engines>
