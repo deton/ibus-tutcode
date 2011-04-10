@@ -39,6 +39,7 @@ CLEANFILES = \
 EXTRA_DIST = \
 	ibus-engine-tutcode.in \
 	tutcode.xml.in.in \
+	test.py \
 	$(NULL)
 
 tutcode.xml: tutcode.xml.in
@@ -52,7 +53,8 @@ tutcode.xml: tutcode.xml.in
 
 test:
 	$(ENV) \
-		LANG=en_US \
+		DBUS_DEBUG=true \
+		IBUS_TUTCODE_PKGDATADIR=$(abs_top_srcdir) \
 		PYTHONPATH=$(top_srcdir) \
 		$(PYTHON) $(srcdir)/main.py
 

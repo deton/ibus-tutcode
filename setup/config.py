@@ -16,7 +16,7 @@ class Config:
         'use_mmap': True,
         'page_size': tutcode.CandidateSelector.PAGE_SIZE,
         'pagination_start': tutcode.CandidateSelector.PAGINATION_START,
-        'rom_kana_rule': tutcode.ROM_KANA_TUTCODE,
+        'tutcode_rule': tutcode.ROM_KANA_TUTCODE,
         'initial_input_mode': tutcode.INPUT_MODE_HIRAGANA,
         }
 
@@ -25,7 +25,7 @@ class Config:
     # several complex types (e.g. dictionary) to be stored in its
     # config mechanism.
     __file_defaults = {
-        'custom_rom_kana_rule': dict()
+        'custom_tutcode_rule': dict()
         }
 
     __modified = dict()

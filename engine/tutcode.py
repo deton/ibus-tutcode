@@ -52,9 +52,13 @@ INPUT_MODE_TRANSITION_RULE = {
         },
     }
 
-ROM_KANA_TUTCODE = range(1)
+ROM_KANA_TUTCODE = 0
 
-ROM_KANA_RULES = (TUTCODE_RULE)
+ROM_KANA_RULES = (TUTCODE_RULE,)
+
+TRANSLATED_STRINGS = {
+    u'dict-edit-prompt': u'DictEdit'
+}
 
 class DictBase(object):
     ENCODING = 'EUC-JIS-2004'
@@ -496,7 +500,7 @@ class Context(object):
 
         self.usrdict = usrdict
         self.sysdict = sysdict
-        self.tutcode_rule = ROM_KANA_TUTCODE_RULE
+        self.tutcode_rule = ROM_KANA_TUTCODE
         self.direct_input_on_latin = False
         self.translated_strings = dict(TRANSLATED_STRINGS)
         self.debug = False
@@ -764,15 +768,6 @@ class Context(object):
                         output = u''
                         self.activate_input_mode(input_mode)
                         return (True, output)
-
-            # Convert hankaku to zenkaku with ctrl+q in abbrev mode (Issue#17).
-            if self.__current_state().abbrev and str(key) == 'ctrl+q':
-                ascii = zenkaku_ascii(self.__current_state().rom_kana_state[0])
-                self.kakutei()
-                if self.dict_edit_level() > 0:
-                    self.__current_state().dict_edit_output += ascii
-                    return (True, u'')
-                return (True, ascii)
 
             if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
                 output = self.kakutei()
