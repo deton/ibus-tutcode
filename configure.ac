@@ -80,7 +80,7 @@ Makefile
 ibus-tutcode.spec
 engine/Makefile
 engine/ibus-engine-tutcode
-engine/tutcode-python.xml.in
+engine/tutcode.xml.in
 icons/Makefile
 m4/Makefile
 )

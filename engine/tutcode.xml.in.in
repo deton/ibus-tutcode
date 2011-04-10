@@ -1,8 +1,8 @@
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
 <!-- filename: tutcode.xml -->
 <component>
-	<name>org.freedesktop.IBus.TUTCodePython</name>
-	<description>TUT-Code Python Component</description>
+	<name>org.freedesktop.IBus.TUTCode</name>
+	<description>TUT-Code Component</description>
 	<exec>${libexecdir}/ibus-engine-tutcode --ibus</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
@@ -12,7 +12,7 @@
 
 	<engines>
 		<engine>
-			<name>tutcode-python</name>
+			<name>tutcode</name>
 			<language>ja</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>

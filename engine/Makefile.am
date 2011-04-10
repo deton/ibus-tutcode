@@ -27,7 +27,7 @@ engine_tutcodedir = $(datadir)/ibus-tutcode
 
 bin_SCRIPTS = ibus-engine-tutcode
 
-component_DATA = tutcode-python.xml
+component_DATA = tutcode.xml
 componentdir = $(datadir)/ibus/component
 
 CLEANFILES = \
@@ -36,10 +36,10 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	ibus-engine-tutcode.in \
-	tutcode-python.xml.in.in \
+	tutcode.xml.in.in \
 	$(NULL)
 
-tutcode-python.xml: tutcode-python.xml.in
+tutcode.xml: tutcode.xml.in
 	$(AM_V_GEN) \
 	( \
 		libexecdir=${libexecdir}; \

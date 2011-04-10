@@ -28,13 +28,13 @@ import locale
 
 class IMApp:
     def __init__(self, exec_by_ibus):
-        self.__component = ibus.Component("org.freedesktop.IBus.TUTCodePython",
-                                          "TUT-Code Python Component",
+        self.__component = ibus.Component("org.freedesktop.IBus.TUTCode",
+                                          "TUT-Code Component",
                                           "0.1.0",
                                           "GPL",
                                           "Peng Huang <shawn.p.huang@gmail.com>")
-        self.__component.add_engine("tutcode-python",
-                                    "tutcode python",
+        self.__component.add_engine("tutcode",
+                                    "tutcode",
                                     "Japanese TUT-Code",
                                     "ja",
                                     "GPL",
@@ -46,7 +46,7 @@ class IMApp:
         self.__bus.connect("disconnected", self.__bus_disconnected_cb)
         self.__factory = factory.EngineFactory(self.__bus)
         if exec_by_ibus:
-            self.__bus.request_name("org.freedesktop.IBus.TUTCodePython", 0)
+            self.__bus.request_name("org.freedesktop.IBus.TUTCode", 0)
         else:
             self.__bus.register_component(self.__component)
 
