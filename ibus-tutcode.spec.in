@@ -48,5 +48,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ibus/engine/tutcode.engine
 
 %changelog
-* Wed Jun 25 2008 Peng Huang <shawn.p.huang@gmail.com> - 0.1.0-1
-- The first version.
+* @DATE_DISPLAY@ KIHARA Hideto <deton@m1.interq.or.jp> - @PACKAGE_VERSION@-1
+- current version

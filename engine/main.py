@@ -30,15 +30,15 @@ class IMApp:
     def __init__(self, exec_by_ibus):
         self.__component = ibus.Component("org.freedesktop.IBus.TUTCode",
                                           "TUT-Code Component",
-                                          "0.1.0",
+                                          "0.0.1",
                                           "GPL",
-                                          "Peng Huang <shawn.p.huang@gmail.com>")
+                                          "KIHARA Hideto <deton@m1.interq.or.jp>")
         self.__component.add_engine("tutcode",
                                     "tutcode",
                                     "Japanese TUT-Code",
                                     "ja",
                                     "GPL",
-                                    "Peng Huang <shawn.p.huang@gmail.com>",
+                                    "KIHARA Hideto <deton@m1.interq.or.jp>",
                                     "",
                                     "en")
         self.__mainloop = gobject.MainLoop()
