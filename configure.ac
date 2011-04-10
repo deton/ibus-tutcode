@@ -78,8 +78,6 @@ AM_GNU_GETTEXT_VERSION(0.16.1)
 AC_CONFIG_FILES(po/Makefile.in
 Makefile
 ibus-tutcode.spec
-src/Makefile
-src/tutcode.xml.in
 engine/Makefile
 engine/ibus-engine-tutcode
 engine/tutcode-python.xml.in
