@@ -25,9 +25,9 @@ engine_tutcode_PYTHON = \
 	tutcode.py \
 	tutcode_rule.py \
 	$(NULL)
-engine_tutcodedir = $(datadir)/ibus-tutcode
+engine_tutcodedir = $(pkgdatadir)/engine
 
-bin_SCRIPTS = ibus-engine-tutcode
+libexec_SCRIPTS = ibus-engine-tutcode
 
 component_DATA = tutcode.xml
 componentdir = $(datadir)/ibus/component
@@ -56,5 +56,5 @@ test:
 		DBUS_DEBUG=true \
 		IBUS_TUTCODE_PKGDATADIR=$(abs_top_srcdir) \
 		PYTHONPATH=$(top_srcdir) \
-		$(PYTHON) $(srcdir)/main.py
+		$(PYTHON) $(srcdir)/test.py
 

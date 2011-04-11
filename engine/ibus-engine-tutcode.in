@@ -19,5 +19,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-exec python @prefix@/share/ibus-tutcode/main.py $@
+export IBUS_PREFIX=@prefix@
+export IBUS_TUTCODE_PKGDATADIR=@prefix@/share/ibus-tutcode
+export LIBEXECDIR=@libexecdir@
+exec python $IBUS_TUTCODE_PKGDATADIR/engine/main.py $@
 
