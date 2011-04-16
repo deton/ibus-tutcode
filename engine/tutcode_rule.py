@@ -1,6 +1,7 @@
 # vim:set et sts=4 sw=4:
 # -*- coding: utf-8 -*-
 TUTCODE_RULE = {
+    u'alj': 0, # START_MAZEGAKI
     u'rk': (u'ア', u'あ'),
     u'ri': (u'イ', u'い'),
     u'ru': (u'ウ', u'う'),

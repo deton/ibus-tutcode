@@ -40,6 +40,8 @@ INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA, \
 INPUT_MODE_LATIN = range(4)
 
+START_MAZEGAKI = 0
+
 INPUT_MODE_TRANSITION_RULE = {
     u'\'': {
         INPUT_MODE_HIRAGANA: INPUT_MODE_KATAKANA,
@@ -624,14 +626,11 @@ class Context(object):
         return output
 
     def __activate_candidate_selector(self, midasi):
-        midasi, num_list = replace_num_with_hash(midasi)
         self.__current_state().midasi = midasi
         usr_candidates = self.__usrdict.lookup(midasi)
         sys_candidates = self.__sysdict.lookup(midasi)
         candidates = append_candidates(usr_candidates, sys_candidates)
-        candidates = [(substitute_num(candidate[0], num_list),
-                       candidate[1])
-                      for candidate in candidates]
+        candidates = [(candidate[0], candidate[1]) for candidate in candidates]
         self.__candidate_selector.set_candidates(candidates)
         if self.next_candidate() is None:
             self.__current_state().conv_state = CONV_STATE_START
@@ -725,6 +724,14 @@ class Context(object):
             self.__current_state().rom_kana_state = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
             output = self.__current_state().rom_kana_state[0]
+            # mazegaki start?
+            if not isinstance(output, unicode) and \
+                    output == START_MAZEGAKI:
+                self.__current_state().conv_state = CONV_STATE_START
+                self.__current_state().rom_kana_state = (u'', u'',
+                                                         self.__tutcode_rule_tree)
+                return (True, u'')
+
             if self.__current_state().conv_state == CONV_STATE_NONE and \
                     len(output) > 0:
                 self.__current_state().rom_kana_state = \
@@ -809,6 +816,11 @@ class Context(object):
 
             self.__current_state().rom_kana_state = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
+            output = self.__current_state().rom_kana_state[0]
+            # Ignore mazegaki start
+            if not isinstance(output, unicode):
+                self.__current_state().rom_kana_state = (u'', u'',
+                        self.__tutcode_rule_tree)
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
@@ -991,9 +1003,11 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
         next_output = tree[letter]
         if isinstance(next_output, unicode):
             output += next_output
-        else:
+        elif isinstance(next_output, tuple):
             katakana, hiragana = next_output
             output += self.__convert_kana_by_input_mode(katakana, hiragana)
+        else: # functional sequence (ex. mazegaki start)
+            output = next_output
         next_state = (output, u'', self.__tutcode_rule_tree)
         return next_state
 
