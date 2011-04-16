@@ -51,28 +51,30 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_NONE)
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
-        # catch ctrl-j in HIRAGANA
+        # catch ctrl-j in HIRAGANA -> toggle
         handled, output = self.__tutcode.press_key(u'ctrl+j')
         self.assert_(handled)
         self.assertEqual(output, u'')
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.preedit, u'')
-        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_HIRAGANA)
+        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_LATIN)
         # HIRAGANA to KATAKANA
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
         handled, output = self.__tutcode.press_key(u'\'')
         self.assert_(handled)
         self.assertEqual(output, u'')
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_KATAKANA)
-        # catch ctrl-j in KATAKANA, and be still in KATAKANA
+        # catch ctrl-j in KATAKANA, and be LATIN
         self.__tutcode.press_key(u'ctrl+j')
         self.assert_(handled)
         self.assertEqual(output, u'')
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.preedit, u'')
-        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_KATAKANA)
+        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_LATIN)
         # KATAKANA to HIRAGANA
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_KATAKANA)
         handled, output = self.__tutcode.press_key(u'\'')
         self.assert_(handled)
         self.assertEqual(output, u'')
@@ -85,14 +87,14 @@ class TestTUTCode(unittest.TestCase):
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
         # ek -> か
         self.assertEqual(self.__tutcode.press_key(u'e'), (True, u''))
-        self.assertEqual(self.__tutcode.preedit, u'e')
+        self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.press_key(u'k'), (True, u'か'))
         self.assertEqual(self.__tutcode.preedit, u'')
         # toggle submode to katakana
         self.assertEqual(self.__tutcode.press_key(u'\''), (True, u''))
         # ek -> カ
         self.assertEqual(self.__tutcode.press_key(u'e'), (True, u''))
-        self.assertEqual(self.__tutcode.preedit, u'e')
+        self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.press_key(u'k'), (True, u'カ'))
         self.assertEqual(self.__tutcode.preedit, u'')
 
