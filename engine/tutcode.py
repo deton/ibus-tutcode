@@ -642,7 +642,7 @@ class Context(object):
             return False
         output, pending, tree = self.__current_state().rom_kana_state
         return len(pending) > 0 and \
-            key.letter.lower() in self.__current_state().rom_kana_state[2]
+            key.letter in self.__current_state().rom_kana_state[2]
 
     def __get_next_input_mode(self, key):
         input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
@@ -788,9 +788,7 @@ class Context(object):
             # Start okuri-nasi conversion.
             if key.letter == u' ':
                 self.__current_state().conv_state = CONV_STATE_SELECT
-                midasi = katakana_to_hiragana(\
-                    zenkaku_katakana(\
-                        self.__current_state().rom_kana_state[0]))
+                midasi = self.__current_state().rom_kana_state[0]
                 self.__activate_candidate_selector(midasi)
                 return (True, u'')
 
@@ -928,8 +926,7 @@ class Context(object):
         return len(self.__state_stack) - 1
 
     def __dict_edit_prompt(self):
-        midasi = self.__previous_state().rom_kana_state[0] + \
-            self.__previous_state().rom_kana_state[1]
+        midasi = self.__previous_state().rom_kana_state[0]
         return u'%s%s%s %s ' % (u'[' * self.dict_edit_level(),
                                 self.translated_strings['dict-edit-prompt'],
                                 u']' * self.dict_edit_level(),
@@ -951,15 +948,16 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
             if self.__current_state().rom_kana_state:
                 return (prompt,
                         prefix,
-                        self.__current_state().rom_kana_state[1],
+                        # Don't show intermediate keys in preedit like tc2.
+                        # self.__current_state().rom_kana_state[1],
+                        u'',
                         u'')
             else:
                 return (prompt, prefix, u'', u'')
         elif self.__current_state().conv_state == CONV_STATE_START:
             return (prompt,
                     prefix + u'▽',
-                    self.__current_state().rom_kana_state[0] + \
-                        self.__current_state().rom_kana_state[1],
+                    self.__current_state().rom_kana_state[0],
                     u'')
         else:
             if self.__current_state().midasi:
