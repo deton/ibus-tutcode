@@ -1,7 +1,7 @@
 # vim:set et sts=4 sw=4:
 # -*- coding: utf-8 -*-
 #
-# ibus-tutcode - The TUT-Code engine for IBus
+# ibus-tutcode - The TUT-Code engine for IBus (based on ibus-skk)
 #
 # Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 # Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>
@@ -282,12 +282,12 @@ class Engine(ibus.EngineBase):
             keychr = unichr(keyval)
             if 0x20 > ord(keychr) or ord(keychr) > 0x7E:
                 # If the pre-edit buffer is visible, always handle key events:
-                # http://github.com/ueno/ibus-tutcode/issues/#issue/5
+                # http://github.com/ueno/ibus-skk/issues/#issue/5
                 return len(self.__tutcode.preedit) > 0
         if state & modifier.CONTROL_MASK:
             # Some systems return 'J' if ctrl:nocaps xkb option is
             # enabled and the user press CapsLock + 'j':
-            # http://github.com/ueno/ibus-tutcode/issues/#issue/22
+            # http://github.com/ueno/ibus-skk/issues/#issue/22
             keychr = u'ctrl+' + keychr.lower()
         return self.__tutcode_press_key(keychr)
 
@@ -306,7 +306,7 @@ class Engine(ibus.EngineBase):
         if self.__check_handled(handled, output):
             return True
         # If the pre-edit buffer is visible, always handle key events:
-        # http://github.com/ueno/ibus-tutcode/issues/#issue/5
+        # http://github.com/ueno/ibus-skk/issues/#issue/5
         return len(self.__tutcode.preedit) > 0
 
     def __invalidate(self):

@@ -38,7 +38,7 @@ class Config:
             with open(config_path, 'r') as f:
                 self.__config_from_file = json.load(f)
         except:
-            # print "Can't read config file: %s" % self.__config_path_unexpanded
+            print "Can't read config file: %s" % self.__config_path_unexpanded
             self.__config_from_file = dict()
         self.fetch_all()
 
@@ -87,10 +87,10 @@ class Config:
         value = self.__modified.get(name)
         if value is not None:
             return value
-        value = self.__defaults.get(name)
+        value = self.__config_from_file.get(name)
         if value is not None:
             return value
-        value = self.__config_from_file.get(name)
+        value = self.__defaults.get(name)
         if value is not None:
             return value
         value = self.__file_defaults.get(name)
