@@ -97,6 +97,26 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.press_key(u'k'), (True, u'カ'))
         self.assertEqual(self.__tutcode.preedit, u'')
+        # "d " -> 、
+        self.assertEqual(self.__tutcode.press_key(u'd'), (True, u''))
+        self.assertEqual(self.__tutcode.preedit, u'')
+        self.assertEqual(self.__tutcode.press_key(u' '), (True, u'、'))
+        self.assertEqual(self.__tutcode.preedit, u'')
+
+    def testmazegaki(self):
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.assertEqual(self.__tutcode.press_key(u'a'), (True, u''))
+        self.assertEqual(self.__tutcode.press_key(u'l'), (True, u''))
+        self.assertEqual(self.__tutcode.press_key(u'j'), (True, u''))
+        self.assertEqual(self.__tutcode.press_key(u'r'), (True, u''))
+        self.assertEqual(self.__tutcode.press_key(u'k'), (True, u''))
+        self.assertEqual(self.__tutcode.preedit, u'▽あ')
+        self.assertEqual(self.__tutcode.press_key(u'r'), (True, u''))
+        self.assertEqual(self.__tutcode.press_key(u'i'), (True, u''))
+        self.assertEqual(self.__tutcode.preedit, u'▽あい')
+        self.__tutcode.press_key(u' ')
+        self.assertEqual(self.__tutcode.preedit, u'▼愛')
 
 if __name__ == '__main__':
     unittest.main()
