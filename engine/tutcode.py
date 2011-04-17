@@ -782,8 +782,6 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     return (True, u'')
-                if str(key) in ('ctrl+m', 'return'):
-                    output += u'\n'
                 return (True, output)
 
             # If midasi is empty, switch back to CONV_STATE_NONE
@@ -849,8 +847,6 @@ class Context(object):
                     self.__current_state().dict_edit_output += output
                     output = u''
                 if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
-                    if str(key) in ('ctrl+m', 'return'):
-                        output += u'\n'
                     return (True, output)
                 return (True, output + self.press_key(str(key))[1])
 
