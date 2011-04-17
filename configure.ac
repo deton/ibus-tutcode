@@ -22,8 +22,8 @@
 m4_define([package_name], [ibus-tutcode])
 m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [2])
-m4_define([ibus_micro_version], [99])
+m4_define([ibus_minor_version], [0])
+m4_define([ibus_micro_version], [0])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -32,24 +32,6 @@ m4_define([ibus_version],
 
 AC_INIT([package_name], [ibus_version], [http://code.google.com/p/ibus/issues/entry], [package_name])
 AM_INIT_AUTOMAKE([1.10])
-AC_GNU_SOURCE
-
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_MACRO_DIR([m4])
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
-
-# define PACKAGE_VERSION_* variables
-AS_VERSION
-AS_NANO
-AM_SANITY_CHECK
-AM_MAINTAINER_MODE
-AM_DISABLE_STATIC
-AC_PROG_CC
-AM_PROG_CC_C_O
-AC_PROG_CXX
-AC_ISC_POSIX
-AC_HEADER_STDC
-AM_PROG_LIBTOOL
 
 # check ibus
 PKG_CHECK_MODULES(IBUS, [
@@ -78,7 +60,6 @@ engine/ibus-engine-tutcode
 engine/tutcode.xml.in
 setup/Makefile
 icons/Makefile
-m4/Makefile
 )
 
 AC_OUTPUT
