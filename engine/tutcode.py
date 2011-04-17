@@ -148,12 +148,14 @@ class SysDict(DictBase):
             pass
 
     def __load(self):
+        offsets = self.__okuri_nasi
         self.__close()
         fp = self.__get_fp()
         while True:
             pos = fp.tell()
             line = fp.readline()
-            if not line:
+            if not line: # no ';; okuri-ari entries.'
+                fp.seek(0)
                 break
             if line.startswith(';; okuri-ari entries.'):
                 offsets = self.__okuri_ari
@@ -630,7 +632,6 @@ class Context(object):
         usr_candidates = self.__usrdict.lookup(midasi)
         sys_candidates = self.__sysdict.lookup(midasi)
         candidates = append_candidates(usr_candidates, sys_candidates)
-        candidates = [(candidate[0], candidate[1]) for candidate in candidates]
         self.__candidate_selector.set_candidates(candidates)
         if self.next_candidate() is None:
             self.__current_state().conv_state = CONV_STATE_START
@@ -792,7 +793,7 @@ class Context(object):
                 self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
 
-            # Start okuri-nasi conversion.
+            # Start mazegaki conversion.
             if key.letter == u' ':
                 self.__current_state().conv_state = CONV_STATE_SELECT
                 midasi = self.__current_state().rom_kana_state[0]
@@ -983,7 +984,6 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
                     prefix + u'▼',
                     self.__current_state().rom_kana_state[0],
                     u'')
-        return (prompt, prefix, u'', u'')
 
     preedit = property(lambda self: u''.join(self.preedit_components()))
 

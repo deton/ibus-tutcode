@@ -116,7 +116,7 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.press_key(u'i'), (True, u''))
         self.assertEqual(self.__tutcode.preedit, u'▽あい')
         self.__tutcode.press_key(u' ')
-        self.assertEqual(self.__tutcode.preedit, u'▼愛')
+        self.assertEqual(self.__tutcode.preedit, u'▼娃')
 
 if __name__ == '__main__':
     unittest.main()
