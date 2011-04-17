@@ -74,9 +74,10 @@ def main():
 
     exec_by_ibus = False
     daemonize = False
+    debug = False
 
-    shortopt = "ihd"
-    longopt = ["ibus", "help", "daemonize"]
+    shortopt = "ihdD"
+    longopt = ["ibus", "help", "daemonize", "Debug"]
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
@@ -90,9 +91,20 @@ def main():
             daemonize = True
         elif o in ("-i", "--ibus"):
             exec_by_ibus = True
+        elif o in ("-D", "--Debug"):
+            debug = True
         else:
             print >> sys.stderr, "Unknown argument: %s" % o
             print_help(sys.stderr, 1)
+
+    if debug: # copy from ibus-table
+        if not os.access(os.path.expanduser('~/.ibus/tutcode'), os.F_OK):
+            os.system('mkdir -p ~/.ibus/tutcode')
+        logfile = os.path.expanduser('~/.ibus/tutcode/debug.log')
+        sys.stdout = open(logfile, 'a', 0)
+        sys.stderr = open(logfile, 'a', 0)
+        from time import strftime
+        print '--- ', strftime('%Y-%m-%d: %H:%M:%S'), ' ---'
 
     if daemonize:
         if os.fork():
