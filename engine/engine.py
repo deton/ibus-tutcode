@@ -110,7 +110,6 @@ class CandidateSelector(tutcode.CandidateSelector):
 class Engine(ibus.EngineBase):
     config = None
     sysdict = None
-    __setup_pid = 0
 
     __select_keys = [u'a', u's', u'd', u'f', u'j', u'k', u'l',
                      u'q', u'w', u'e', u'r', u'u', u'i', u'o',
@@ -195,10 +194,6 @@ class Engine(ibus.EngineBase):
 
         input_mode_prop.set_sub_props(props)
         tutcode_props.append(input_mode_prop)
-
-        tutcode_props.append(ibus.Property(key=u"setup",
-                                       tooltip=_(u"Configure TUT-Code")))
-
         return tutcode_props
 
     def __update_input_mode(self):
@@ -446,15 +441,6 @@ class Engine(ibus.EngineBase):
         self.__lookup_table_hidden = True
         super(Engine, self).hide_lookup_table()
 
-    def __start_setup(self):
-        if Engine.__setup_pid != 0:
-            pid, state = os.waitpid(Engine.__setup_pid, os.P_NOWAIT)
-            if pid != Engine.__setup_pid:
-                return
-            Engine.__setup_pid = 0
-        setup_cmd = os.path.join(os.getenv('LIBEXECDIR'), 'ibus-setup-tutcode')
-        Engine.__setup_pid = os.spawnl(os.P_NOWAIT, setup_cmd, 'ibus-setup-tutcode')
-
     def focus_in(self):
         self.register_properties(self.__prop_list)
         # skipped at first focus_in after ibus startup
@@ -481,6 +467,3 @@ class Engine(ibus.EngineBase):
             input_mode = self.__prop_name_input_modes[prop_name]
             self.__tutcode.activate_input_mode(input_mode)
             self.__update_input_mode()
-        else:
-            if prop_name == 'setup':
-                self.__start_setup()

@@ -25,21 +25,7 @@ setup_tutcode_PYTHON = \
 
 setup_tutcodedir = $(datadir)/ibus-tutcode/setup
 
-#libexec_SCRIPTS = ibus-setup-tutcode
-
 CLEANFILES = \
 	*.pyc \
 	$(NULL)
-
-#EXTRA_DIST = \
-#	ibus-setup-tutcode.in \
-#	ibus-tutcode-preferences.ui.in \
-#	$(NULL)
-
-#test:
-#	DBUS_DEBUG=true \
-#	LANG=en_US \
-#	PYTHONPATH=$(abs_top_srcdir):$(pyexecdir) \
-#	IBUS_LOCALEDIR=@localedir@ \
-#	$(PYTHON) $(srcdir)/main.py
 
