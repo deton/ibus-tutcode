@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # ibus-tutcode - The TUT-Code engine for IBus
+# (based on ibus-skk)
 #
 # Copyright (C) 2011 KIHARA Hideto <deton@m1.interq.or.jp>
 # Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>

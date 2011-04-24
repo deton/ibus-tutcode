@@ -21,16 +21,16 @@
 # if not 1, append datestamp to the version number.
 m4_define([package_name], [ibus-tutcode])
 m4_define([ibus_released], [0])
-m4_define([ibus_major_version], [1])
+m4_define([ibus_major_version], [0])
 m4_define([ibus_minor_version], [0])
-m4_define([ibus_micro_version], [0])
+m4_define([ibus_micro_version], [1])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
 
-AC_INIT([package_name], [ibus_version], [http://code.google.com/p/ibus/issues/entry], [package_name])
+AC_INIT([package_name], [ibus_version], [], [package_name])
 AM_INIT_AUTOMAKE([1.10])
 
 # check ibus
