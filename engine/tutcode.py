@@ -984,7 +984,7 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
         next_output = tree[letter]
         if isinstance(next_output, unicode):
             output += next_output
-        elif isinstance(next_output, tuple):
+        elif isinstance(next_output, tuple) or isinstance(next_output, list):
             katakana, hiragana = next_output
             output += self.__convert_kana_by_input_mode(katakana, hiragana)
         else: # functional sequence (ex. mazegaki start)
