@@ -117,8 +117,7 @@ class Engine(ibus.EngineBase):
      
     __input_mode_prop_names = {
         tutcode.INPUT_MODE_HIRAGANA : u"InputMode.Hiragana",
-        tutcode.INPUT_MODE_KATAKANA : u"InputMode.Katakana",
-        tutcode.INPUT_MODE_LATIN : u"InputMode.Latin",
+        tutcode.INPUT_MODE_KATAKANA : u"InputMode.Katakana"
         }
 
     __prop_name_input_modes = dict()
@@ -127,8 +126,7 @@ class Engine(ibus.EngineBase):
 
     __input_mode_labels = {
         tutcode.INPUT_MODE_HIRAGANA : u"あ",
-        tutcode.INPUT_MODE_KATAKANA : u"ア",
-        tutcode.INPUT_MODE_LATIN : u"_A",
+        tutcode.INPUT_MODE_KATAKANA : u"ア"
         }
 
     def __init__(self, bus, object_path):
@@ -183,9 +181,6 @@ class Engine(ibus.EngineBase):
         props.append(ibus.Property(key=u"InputMode.Katakana",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Katakana")))
-        props.append(ibus.Property(key=u"InputMode.Latin",
-                                   type=ibus.PROP_TYPE_RADIO,
-                                   label=_(u"Latin")))
 
         props[self.__tutcode.input_mode].set_state(ibus.PROP_STATE_CHECKED)
 
@@ -365,10 +360,7 @@ class Engine(ibus.EngineBase):
     # ABBREV_CURSOR_COLOR = (65, 105, 225)
     # INPUT_MODE_CURSOR_COLORS = {
     #     tutcode.INPUT_MODE_HIRAGANA: (139, 62, 47),
-    #     tutcode.INPUT_MODE_KATAKANA: (34, 139, 34),
-    #     tutcode.INPUT_MODE_LATIN: (139, 139, 131),
-    #     tutcode.INPUT_MODE_WIDE_LATIN: (255, 215, 0),
-    #     tutcode.INPUT_MODE_HANKAKU_KATAKANA: (138, 43, 226)
+    #     tutcode.INPUT_MODE_KATAKANA: (34, 139, 34)
     #     }
 
     def __update(self):

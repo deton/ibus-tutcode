@@ -39,8 +39,7 @@ CONV_STATE_SELECT = range(3)
 
 INPUT_MODE_NONE, \
 INPUT_MODE_HIRAGANA, \
-INPUT_MODE_KATAKANA, \
-INPUT_MODE_LATIN = range(4)
+INPUT_MODE_KATAKANA = range(3)
 
 START_MAZEGAKI = 0
 
@@ -48,12 +47,7 @@ INPUT_MODE_TRANSITION_RULE = {
     u'\'': {
         INPUT_MODE_HIRAGANA: INPUT_MODE_KATAKANA,
         INPUT_MODE_KATAKANA: INPUT_MODE_HIRAGANA
-        },
-    u'ctrl+j': {
-        INPUT_MODE_LATIN: INPUT_MODE_HIRAGANA,
-        INPUT_MODE_HIRAGANA: INPUT_MODE_LATIN,
-        INPUT_MODE_KATAKANA: INPUT_MODE_LATIN
-        },
+        }
     }
 
 ROM_KANA_TUTCODE = 0
@@ -706,16 +700,6 @@ class Context(object):
                     (len(key.letter) == 1 and \
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
-
-            if self.__current_state().input_mode == INPUT_MODE_LATIN:
-                output = key.letter
-                if self.dict_edit_level() > 0:
-                    self.__current_state().dict_edit_output += output
-                    return (True, u'')
-                if self.direct_input_on_latin:
-                    return (False, u'')
-                else:
-                    return (True, output)
 
             # Start rom-kan mode with abbrev enabled (/).
             if not self.__rom_kana_key_is_acceptable(key) and \

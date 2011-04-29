@@ -17,7 +17,7 @@ class Config:
         'page_size': tutcode.CandidateSelector.PAGE_SIZE,
         'pagination_start': tutcode.CandidateSelector.PAGINATION_START,
         'tutcode_rule': tutcode.ROM_KANA_TUTCODE,
-        'initial_input_mode': tutcode.INPUT_MODE_HIRAGANA,
+        'initial_input_mode': tutcode.INPUT_MODE_HIRAGANA
         }
 
     # Options which can only be specified in ~/.config/ibus-tutcode.json.

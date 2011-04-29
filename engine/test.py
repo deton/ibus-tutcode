@@ -51,13 +51,6 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_NONE)
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
-        # catch ctrl-j in HIRAGANA -> toggle
-        handled, output = self.__tutcode.press_key(u'ctrl+j')
-        self.assert_(handled)
-        self.assertEqual(output, u'')
-        self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
-        self.assertEqual(self.__tutcode.preedit, u'')
-        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_LATIN)
         # HIRAGANA to KATAKANA
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
         handled, output = self.__tutcode.press_key(u'\'')
@@ -66,13 +59,6 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_KATAKANA)
-        # catch ctrl-j in KATAKANA, and be LATIN
-        self.__tutcode.press_key(u'ctrl+j')
-        self.assert_(handled)
-        self.assertEqual(output, u'')
-        self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
-        self.assertEqual(self.__tutcode.preedit, u'')
-        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_LATIN)
         # KATAKANA to HIRAGANA
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_KATAKANA)
         handled, output = self.__tutcode.press_key(u'\'')
