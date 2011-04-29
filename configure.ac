@@ -33,12 +33,6 @@ m4_define([ibus_version],
 AC_INIT([package_name], [ibus_version], [], [package_name])
 AM_INIT_AUTOMAKE([1.10])
 
-# check ibus
-PKG_CHECK_MODULES(IBUS, [
-    ibus-1.0 >= 1.3.0
-])
-
-
 #check python
 AM_PATH_PYTHON([2.5])
 

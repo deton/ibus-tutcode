@@ -30,6 +30,7 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	autogen.sh \
 	@PACKAGE_NAME@.spec.in \
+	ibus-tutcode.json.example \
 	$(NULL)
 
 noinst_DIST = \
