@@ -501,7 +501,6 @@ class Context(object):
         self.usrdict = usrdict
         self.sysdict = sysdict
         self.tutcode_rule = ROM_KANA_TUTCODE
-        self.direct_input_on_latin = False
         self.translated_strings = dict(TRANSLATED_STRINGS)
         self.debug = False
         self.reset()

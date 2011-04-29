@@ -149,8 +149,6 @@ class Engine(ibus.EngineBase):
         self.__tutcode = tutcode.Context(usrdict, self.sysdict,
                                  self.__candidate_selector)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
-        self.__tutcode.direct_input_on_latin = \
-            self.config.get_value('direct_input_on_latin')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
         self.__tutcode.translated_strings['dict-edit-prompt'] =\
             _(u'DictEdit').decode('UTF-8')
