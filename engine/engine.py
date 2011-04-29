@@ -182,10 +182,11 @@ class Engine(ibus.EngineBase):
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Katakana")))
 
-        props[self.__tutcode.input_mode].set_state(ibus.PROP_STATE_CHECKED)
-
         for prop in props:
             self.__prop_dict[prop.key] = prop
+
+        prop_name = self.__input_mode_prop_names[self.__tutcode.input_mode]
+        self.__prop_dict[prop_name].set_state(ibus.PROP_STATE_CHECKED)
 
         input_mode_prop.set_sub_props(props)
         tutcode_props.append(input_mode_prop)
