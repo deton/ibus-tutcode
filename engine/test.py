@@ -49,7 +49,7 @@ class TestTUTCode(unittest.TestCase):
     def testinputmodechange(self):
         self.__tutcode.reset()
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
-        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_NONE)
+        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_HIRAGANA)
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
         # HIRAGANA to KATAKANA
         self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)

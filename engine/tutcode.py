@@ -34,16 +34,8 @@ CONV_STATE_NONE, \
 CONV_STATE_START, \
 CONV_STATE_SELECT = range(3)
 
-INPUT_MODE_NONE, \
 INPUT_MODE_HIRAGANA, \
-INPUT_MODE_KATAKANA = range(3)
-
-INPUT_MODE_TRANSITION_RULE = {
-    u'\'': {
-        INPUT_MODE_HIRAGANA: INPUT_MODE_KATAKANA,
-        INPUT_MODE_KATAKANA: INPUT_MODE_HIRAGANA
-        }
-    }
+INPUT_MODE_KATAKANA = range(2)
 
 ROM_KANA_TUTCODE = 0
 
@@ -429,7 +421,7 @@ class State(object):
 
     def reset(self):
         self.conv_state = CONV_STATE_NONE
-        self.input_mode = INPUT_MODE_NONE
+        self.input_mode = INPUT_MODE_HIRAGANA
 
         # Current midasi in conversion.
         self.midasi = None
@@ -497,7 +489,6 @@ class Context(object):
         self.sysdict = sysdict
         self.tutcode_rule = ROM_KANA_TUTCODE
         self.translated_strings = dict(TRANSLATED_STRINGS)
-        self.debug = False
         self.reset()
 
     def __check_dict(self, _dict):
@@ -592,12 +583,8 @@ class Context(object):
     def activate_input_mode(self, input_mode):
         '''Switch the current input mode to INPUT_MODE.'''
         self.__current_state().input_mode = input_mode
-        if self.__current_state().input_mode in (INPUT_MODE_HIRAGANA,
-                                                 INPUT_MODE_KATAKANA):
-            self.__current_state().rom_kana_state = (u'', u'',
-                                                     self.__tutcode_rule_tree)
-        else:
-            self.__current_state().rom_kana_state = None
+        self.__current_state().rom_kana_state = (u'', u'',
+                                                 self.__tutcode_rule_tree)
 
     def kakutei(self):
         '''Fix the current candidate as a commitable string.'''
@@ -634,10 +621,12 @@ class Context(object):
         return len(pending) > 0 and \
             key.letter in self.__current_state().rom_kana_state[2]
 
-    def __get_next_input_mode(self, key):
-        input_mode = INPUT_MODE_TRANSITION_RULE.get(str(key), dict()).\
-            get(self.__current_state().input_mode)
-        return input_mode
+    def __toggle_kana_mode(self):
+        input_mode = INPUT_MODE_HIRAGANA
+        if self.__current_state().input_mode == INPUT_MODE_HIRAGANA:
+            input_mode = INPUT_MODE_KATAKANA
+        self.reset()
+        self.activate_input_mode(input_mode)
 
     def press_key(self, keystr):
         '''Process a key press event KEYSTR.
@@ -668,19 +657,6 @@ class Context(object):
             return self.delete_char()
 
         if self.__current_state().conv_state == CONV_STATE_NONE:
-            # If KEY will be consumed in the next rom-kana conversion,
-            # skip input mode transition.
-            if not self.__rom_kana_key_is_acceptable(key):
-                input_mode = self.__get_next_input_mode(key)
-                if input_mode is not None:
-                    if self.__current_state().rom_kana_state:
-                        output = self.__current_state().rom_kana_state[0]
-                    else:
-                        output = u''
-                    self.reset()
-                    self.activate_input_mode(input_mode)
-                    return (True, output)
-
             if self.dict_edit_level() > 0 and str(key) in ('ctrl+m', 'return'):
                 return (True, self.__leave_dict_edit())
 
@@ -701,13 +677,16 @@ class Context(object):
             self.__current_state().rom_kana_state = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
             output = self.__current_state().rom_kana_state[0]
-            # mazegaki start?
-            if not isinstance(output, unicode) and \
-                    output == tutcode_command.COMMAND_MAZEGAKI:
-                self.__current_state().conv_state = CONV_STATE_START
-                self.__current_state().rom_kana_state = (u'', u'',
-                                                         self.__tutcode_rule_tree)
-                return (True, u'')
+            # command?
+            if not isinstance(output, unicode):
+                if output == tutcode_command.COMMAND_MAZEGAKI:
+                    self.__current_state().conv_state = CONV_STATE_START
+                    self.__current_state().rom_kana_state = (u'', u'',
+                                                             self.__tutcode_rule_tree)
+                    return (True, u'')
+                elif output == tutcode_command.COMMAND_TOGGLE_KANA:
+                    self.__toggle_kana_mode()
+                    return (True, u'')
 
             if self.__current_state().conv_state == CONV_STATE_NONE and \
                     len(output) > 0:
@@ -722,37 +701,6 @@ class Context(object):
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_START:
-            # If KEY will be consumed in the next rom-kana conversion,
-            # skip input mode transition.
-            if not self.__rom_kana_key_is_acceptable(key) and \
-                    not self.__current_state().abbrev:
-                input_mode = self.__get_next_input_mode(key)
-                if self.__current_state().input_mode == INPUT_MODE_HIRAGANA and \
-                        input_mode == INPUT_MODE_KATAKANA:
-                    kana = hiragana_to_katakana(\
-                        self.__current_state().rom_kana_state[0])
-                    self.kakutei()
-                    if self.dict_edit_level() > 0:
-                        self.__current_state().dict_edit_output += kana
-                        return (True, u'')
-                    return (True, kana)
-                elif self.__current_state().input_mode == INPUT_MODE_KATAKANA and \
-                        input_mode == INPUT_MODE_HIRAGANA:
-                    kana = katakana_to_hiragana(\
-                        self.__current_state().rom_kana_state[0])
-                    self.kakutei()
-                    if self.dict_edit_level() > 0:
-                        self.__current_state().dict_edit_output += kana
-                        return (True, u'')
-                    return (True, kana)
-                elif input_mode is not None:
-                    output = self.kakutei()
-                    if self.dict_edit_level() > 0:
-                        self.__current_state().dict_edit_output += output
-                        output = u''
-                        self.activate_input_mode(input_mode)
-                        return (True, output)
-
             if str(key) in ('ctrl+m', 'return'):
                 output = self.kakutei()
                 if self.dict_edit_level() > 0:
@@ -792,10 +740,13 @@ class Context(object):
             self.__current_state().rom_kana_state = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
             output = self.__current_state().rom_kana_state[0]
-            # Ignore mazegaki start
             if not isinstance(output, unicode):
-                self.__current_state().rom_kana_state = (u'', u'',
-                        self.__tutcode_rule_tree)
+                # ignore mazegaki start
+                if output == tutcode_command.COMMAND_MAZEGAKI:
+                    self.__current_state().rom_kana_state = (u'', u'',
+                            self.__tutcode_rule_tree)
+                elif output == tutcode_command.COMMAND_TOGGLE_KANA:
+                    self.__toggle_kana_mode()
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:

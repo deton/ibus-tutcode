@@ -158,7 +158,7 @@ class Engine(ibus.EngineBase):
         self.__tutcode.activate_input_mode(self.__initial_input_mode)
         self.__prop_dict = dict()
         self.__prop_list = self.__init_props()
-        self.__input_mode = tutcode.INPUT_MODE_NONE
+        self.__input_mode = tutcode.INPUT_MODE_HIRAGANA
         self.__update_input_mode()
         self.__suspended_mode = None
 
