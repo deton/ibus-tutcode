@@ -150,10 +150,17 @@ class Engine(ibus.EngineBase):
                                  self.__candidate_selector)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
-        self.__tutcode.translated_strings['dict-edit-prompt'] =\
+        self.__tutcode.translated_strings['dict-edit-prompt'] = \
             _(u'DictEdit').decode('UTF-8')
         self.__tutcode.custom_tutcode_rule = \
             self.config.get_value('custom_tutcode_rule')
+        self.__tutcode.cancel_keys = self.config.get_value('cancel_keys')
+        self.__tutcode.next_keys = self.config.get_value('next_keys')
+        self.__tutcode.prev_keys = self.config.get_value('prev_keys')
+        self.__tutcode.commit_keys = self.config.get_value('commit_keys')
+        self.__tutcode.conv_keys = self.config.get_value('conv_keys')
+        self.__tutcode.backspace_keys = self.config.get_value('backspace_keys')
+        self.__tutcode.purge_keys = self.config.get_value('purge_keys')
         self.__tutcode.reset()
         self.__tutcode.activate_input_mode(self.__initial_input_mode)
         self.__prop_dict = dict()
@@ -401,10 +408,6 @@ class Engine(ibus.EngineBase):
         self.update_preedit_text(ibus.Text(preedit, attrs),
                                  len(preedit), len(preedit) > 0)
         visible = self.__candidate_selector.lookup_table_visible()
-        if self.config.get_value('show_annotation'):
-            candidate = self.__candidate_selector.candidate()
-            annotation = candidate[1] if candidate else None
-            self.update_auxiliary_text(ibus.Text(annotation or u''), visible)
         self.update_lookup_table(self.__lookup_table, visible)
         self.__update_input_mode()
 

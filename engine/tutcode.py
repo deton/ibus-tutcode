@@ -336,22 +336,6 @@ def compile_tutcode_rule(rule):
         _compile_tutcode_rule(tree, input_state, rule[input_state])
     return tree
 
-def hiragana_to_katakana(kana):
-    diff = ord(u'ア') - ord(u'あ')
-    def to_katakana(letter):
-        if ord(u'ぁ') <= ord(letter) and ord(letter) <= ord(u'ん'):
-            return unichr(ord(letter) + diff)
-        return letter
-    return u''.join(map(to_katakana, kana)).replace(u'ウ゛', u'ヴ')
-
-def katakana_to_hiragana(kana):
-    diff = ord(u'ア') - ord(u'あ')
-    def to_hiragana(letter):
-        if ord(u'ァ') <= ord(letter) and ord(letter) <= ord(u'ン'):
-            return unichr(ord(letter) - diff)
-        return letter
-    return u''.join(map(to_hiragana, kana.replace(u'ヴ', u'ウ゛')))
-
 class CandidateSelector(object):
     PAGE_SIZE = 7
     PAGINATION_START = 4
@@ -485,6 +469,14 @@ class Context(object):
         self.__state_stack = list()
         self.__state_stack.append(State())
 
+        self.__cancel_keys = ('ctrl+g', 'ctrl+u')
+        self.__next_keys = (' ', 'ctrl+n')
+        self.__prev_keys = ('ctrl+p',)
+        self.__commit_keys = ('ctrl+m', 'return')
+        self.__conv_keys = (' ', 'ctrl+n')
+        self.__backspace_keys = ('ctrl+h', 'backspace')
+        self.__purge_keys = ('!',)
+
         self.usrdict = usrdict
         self.sysdict = sysdict
         self.tutcode_rule = ROM_KANA_TUTCODE
@@ -507,6 +499,29 @@ class Context(object):
 
     usrdict = property(lambda self: self.__usrdict, set_usrdict)
     sysdict = property(lambda self: self.__sysdict, set_sysdict)
+
+    def set_cancel_keys(self, cancel_keys):
+        self.__cancel_keys = cancel_keys
+    def set_next_keys(self, next_keys):
+        self.__next_keys = next_keys
+    def set_prev_keys(self, prev_keys):
+        self.__prev_keys = prev_keys
+    def set_commit_keys(self, commit_keys):
+        self.__commit_keys = commit_keys
+    def set_conv_keys(self, conv_keys):
+        self.__conv_keys = conv_keys
+    def set_backspace_keys(self, backspace_keys):
+        self.__backspace_keys = backspace_keys
+    def set_purge_keys(self, purge_keys):
+        self.__purge_keys = purge_keys
+
+    cancel_keys = property(lambda self: self.__cancel_keys, set_cancel_keys)
+    next_keys = property(lambda self: self.__next_keys, set_next_keys)
+    prev_keys = property(lambda self: self.__prev_keys, set_prev_keys)
+    commit_keys = property(lambda self: self.__commit_keys, set_commit_keys)
+    conv_keys = property(lambda self: self.__conv_keys, set_conv_keys)
+    backspace_keys = property(lambda self: self.__backspace_keys, set_backspace_keys)
+    purge_keys = property(lambda self: self.__purge_keys, set_purge_keys)
 
     def __update_tutcode_rule_tree(self):
         rule = dict(ROM_KANA_RULES[self.__tutcode_rule])
@@ -637,7 +652,7 @@ class Context(object):
         True if the event was handled internally (otherwise False),
         and OUTPUT is a committable string (if any).'''
         key = Key(keystr)
-        if str(key) == 'ctrl+g':
+        if str(key) in self.__cancel_keys:
             if self.dict_edit_level() > 0 and \
                     self.__current_state().conv_state == CONV_STATE_NONE:
                 self.__abort_dict_edit()
@@ -653,11 +668,11 @@ class Context(object):
                 self.__current_state().conv_state = CONV_STATE_START
             return (True, u'')
 
-        if str(key) in ('ctrl+h', 'backspace'):
+        if str(key) in self.__backspace_keys:
             return self.delete_char()
 
         if self.__current_state().conv_state == CONV_STATE_NONE:
-            if self.dict_edit_level() > 0 and str(key) in ('ctrl+m', 'return'):
+            if self.dict_edit_level() > 0 and str(key) in self.__commit_keys:
                 return (True, self.__leave_dict_edit())
 
             # Ignore ctrl+key and non-ASCII characters.
@@ -698,7 +713,7 @@ class Context(object):
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_START:
-            if str(key) in ('ctrl+m', 'return'):
+            if str(key) in self.__commit_keys:
                 output = self.kakutei()
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
@@ -707,13 +722,13 @@ class Context(object):
 
             # If midasi is empty, switch back to CONV_STATE_NONE
             # instead of CONV_STATE_SELECT.
-            if key.letter == u' ' and \
+            if str(key) in self.__conv_keys and \
                     len(self.__current_state().rom_kana_state[0]) == 0:
                 self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
 
             # Start mazegaki conversion.
-            if key.letter == u' ':
+            if str(key) in self.__conv_keys:
                 self.__current_state().conv_state = CONV_STATE_SELECT
                 midasi = self.__current_state().rom_kana_state[0]
                 self.__activate_candidate_selector(midasi)
@@ -747,17 +762,17 @@ class Context(object):
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
-            if key.letter.isspace():
+            if str(key) in self.__next_keys:
                 index = self.__candidate_selector.index()
                 if self.next_candidate() is None:
                     self.__candidate_selector.set_index(index)
                     self.__enter_dict_edit()
                 return (True, u'')
-            elif key.letter == 'x':
+            elif str(key) in self.__prev_keys:
                 if self.previous_candidate() is None:
                     self.__current_state().conv_state = CONV_STATE_START
                 return (True, u'')
-            elif key.letter == 'X':
+            elif str(key) in self.__purge_keys:
                 self.__usrdict.purge_candidate(self.__current_state().midasi,
                                                self.__candidate_selector.candidate()[0])
                 input_mode = self.__current_state().input_mode
@@ -770,7 +785,7 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     output = u''
-                if str(key) in ('ctrl+m', 'return'):
+                if str(key) in self.__commit_keys:
                     return (True, output)
                 return (True, output + self.press_key(str(key))[1])
 

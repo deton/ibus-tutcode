@@ -25,7 +25,14 @@ class Config:
     # several complex types (e.g. dictionary) to be stored in its
     # config mechanism.
     __file_defaults = {
-        'custom_tutcode_rule': dict()
+        'custom_tutcode_rule': dict(),
+        'cancel_keys': ('ctrl+g', 'ctrl+u'),
+        'next_keys': (' ', 'ctrl+n'),
+        'prev_keys': ('ctrl+p',),
+        'commit_keys': ('ctrl+m', 'return'),
+        'conv_keys': (' ','ctrl+n'),
+        'backspace_keys': ('ctrl+h', 'backspace'),
+        'purge_keys': ('!',)
         }
 
     __modified = dict()

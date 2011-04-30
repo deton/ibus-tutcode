@@ -46,6 +46,10 @@ class TestTUTCode(unittest.TestCase):
         finally:
             os.unlink(usrdict_path)
 
+    def testkeyconfig(self):
+        self.__tutcode.cancel_keys = ('ctrl+u',)
+        self.assertEqual(self.__tutcode.cancel_keys, ('ctrl+u',))
+
     def testinputmodechange(self):
         self.__tutcode.reset()
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
