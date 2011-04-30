@@ -155,11 +155,11 @@ class Engine(ibus.EngineBase):
         self.__tutcode.custom_tutcode_rule = \
             self.config.get_value('custom_tutcode_rule')
         self.__tutcode.cancel_keys = self.config.get_value('cancel_keys')
+        self.__tutcode.backspace_keys = self.config.get_value('backspace_keys')
+        self.__tutcode.conv_keys = self.config.get_value('conv_keys')
         self.__tutcode.next_keys = self.config.get_value('next_keys')
         self.__tutcode.prev_keys = self.config.get_value('prev_keys')
         self.__tutcode.commit_keys = self.config.get_value('commit_keys')
-        self.__tutcode.conv_keys = self.config.get_value('conv_keys')
-        self.__tutcode.backspace_keys = self.config.get_value('backspace_keys')
         self.__tutcode.purge_keys = self.config.get_value('purge_keys')
         self.__tutcode.reset()
         self.__tutcode.activate_input_mode(self.__initial_input_mode)

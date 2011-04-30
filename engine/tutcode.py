@@ -470,11 +470,11 @@ class Context(object):
         self.__state_stack.append(State())
 
         self.__cancel_keys = ('ctrl+g', 'ctrl+u')
+        self.__backspace_keys = ('ctrl+h', 'backspace')
+        self.__conv_keys = (' ', 'ctrl+n')
         self.__next_keys = (' ', 'ctrl+n')
         self.__prev_keys = ('ctrl+p',)
         self.__commit_keys = ('ctrl+m', 'return')
-        self.__conv_keys = (' ', 'ctrl+n')
-        self.__backspace_keys = ('ctrl+h', 'backspace')
         self.__purge_keys = ('!',)
 
         self.usrdict = usrdict
@@ -502,25 +502,25 @@ class Context(object):
 
     def set_cancel_keys(self, cancel_keys):
         self.__cancel_keys = cancel_keys
+    def set_backspace_keys(self, backspace_keys):
+        self.__backspace_keys = backspace_keys
+    def set_conv_keys(self, conv_keys):
+        self.__conv_keys = conv_keys
     def set_next_keys(self, next_keys):
         self.__next_keys = next_keys
     def set_prev_keys(self, prev_keys):
         self.__prev_keys = prev_keys
     def set_commit_keys(self, commit_keys):
         self.__commit_keys = commit_keys
-    def set_conv_keys(self, conv_keys):
-        self.__conv_keys = conv_keys
-    def set_backspace_keys(self, backspace_keys):
-        self.__backspace_keys = backspace_keys
     def set_purge_keys(self, purge_keys):
         self.__purge_keys = purge_keys
 
     cancel_keys = property(lambda self: self.__cancel_keys, set_cancel_keys)
+    backspace_keys = property(lambda self: self.__backspace_keys, set_backspace_keys)
+    conv_keys = property(lambda self: self.__conv_keys, set_conv_keys)
     next_keys = property(lambda self: self.__next_keys, set_next_keys)
     prev_keys = property(lambda self: self.__prev_keys, set_prev_keys)
     commit_keys = property(lambda self: self.__commit_keys, set_commit_keys)
-    conv_keys = property(lambda self: self.__conv_keys, set_conv_keys)
-    backspace_keys = property(lambda self: self.__backspace_keys, set_backspace_keys)
     purge_keys = property(lambda self: self.__purge_keys, set_purge_keys)
 
     def __update_tutcode_rule_tree(self):

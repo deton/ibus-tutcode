@@ -1,4 +1,7 @@
 {
+    "conv_keys": ["ctrl+n"],
+    "next_keys": ["ctrl+n"],
+    "commit_keys": ["ctrl+j", "ctrl+m", "return"],
     "custom_tutcode_rule": {
         "w ": "〜",
         "s ": "―",
