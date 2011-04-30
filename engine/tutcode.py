@@ -681,13 +681,9 @@ class Context(object):
                     self.activate_input_mode(input_mode)
                     return (True, output)
 
-            if self.dict_edit_level() > 0 and str(key) in ('ctrl+j', 'ctrl+m', 'return'):
+            if self.dict_edit_level() > 0 and str(key) in ('ctrl+m', 'return'):
                 return (True, self.__leave_dict_edit())
 
-            # XXX: ctrl+j should be treated as handled? (a8ffece4 and caf9f944)
-            if str(key) == 'ctrl+j':
-                return (True, u'')
-                
             # Ignore ctrl+key and non-ASCII characters.
             if key.is_ctrl() or \
                     str(key) in ('return', 'escape', 'backspace') or \
@@ -757,7 +753,7 @@ class Context(object):
                         self.activate_input_mode(input_mode)
                         return (True, output)
 
-            if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
+            if str(key) in ('ctrl+m', 'return'):
                 output = self.kakutei()
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
@@ -826,7 +822,7 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     output = u''
-                if str(key) in ('ctrl+j', 'ctrl+m', 'return'):
+                if str(key) in ('ctrl+m', 'return'):
                     return (True, output)
                 return (True, output + self.press_key(str(key))[1])
 
