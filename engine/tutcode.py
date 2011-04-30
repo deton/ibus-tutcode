@@ -667,13 +667,6 @@ class Context(object):
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
 
-            # Start rom-kan mode with abbrev enabled (/).
-            if not self.__rom_kana_key_is_acceptable(key) and \
-                    key.letter == '/':
-                self.__current_state().conv_state = CONV_STATE_START
-                self.__current_state().abbrev = True
-                return (True, u'')
-
             self.__current_state().rom_kana_state = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
             output = self.__current_state().rom_kana_state[0]
@@ -682,11 +675,15 @@ class Context(object):
                 if output == tutcode_command.COMMAND_MAZEGAKI:
                     self.__current_state().conv_state = CONV_STATE_START
                     self.__current_state().rom_kana_state = (u'', u'',
-                                                             self.__tutcode_rule_tree)
-                    return (True, u'')
+                            self.__tutcode_rule_tree)
+                elif output == tutcode_command.COMMAND_ABBREV:
+                    self.__current_state().conv_state = CONV_STATE_START
+                    self.__current_state().rom_kana_state = (u'', u'',
+                            self.__tutcode_rule_tree)
+                    self.__current_state().abbrev = True
                 elif output == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
-                    return (True, u'')
+                return (True, u'')
 
             if self.__current_state().conv_state == CONV_STATE_NONE and \
                     len(output) > 0:

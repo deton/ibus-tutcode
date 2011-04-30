@@ -4,6 +4,7 @@ import tutcode_command
 TUTCODE_RULE = {
     u'\'': tutcode_command.COMMAND_TOGGLE_KANA,
     u'alj': tutcode_command.COMMAND_MAZEGAKI,
+    u'al/': tutcode_command.COMMAND_ABBREV,
     u'rk': (u'ア', u'あ'),
     u'ri': (u'イ', u'い'),
     u'ru': (u'ウ', u'う'),
