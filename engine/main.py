@@ -30,7 +30,7 @@ class IMApp:
     def __init__(self, exec_by_ibus):
         self.__component = ibus.Component("org.freedesktop.IBus.TUTCode",
                                           "TUT-Code Component",
-                                          "0.0.1",
+                                          "1.0.0",
                                           "GPL",
                                           "KIHARA Hideto <deton@m1.interq.or.jp>")
         self.__component.add_engine("tutcode",
