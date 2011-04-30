@@ -1,7 +1,9 @@
 # vim:set et sts=4 sw=4:
 # -*- coding: utf-8 -*-
+import tutcode_command
 TUTCODE_RULE = {
-    u'alj': 0, # START_MAZEGAKI
+    u'\'': tutcode_command.COMMAND_TOGGLE_KANA,
+    u'alj': tutcode_command.COMMAND_MAZEGAKI,
     u'rk': (u'ア', u'あ'),
     u'ri': (u'イ', u'い'),
     u'ru': (u'ウ', u'う'),

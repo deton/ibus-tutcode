@@ -26,6 +26,7 @@
 from __future__ import with_statement
 import os.path
 import re
+import tutcode_command
 from tutcode_rule import TUTCODE_RULE
 import mmap
 
@@ -36,8 +37,6 @@ CONV_STATE_SELECT = range(3)
 INPUT_MODE_NONE, \
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA = range(3)
-
-START_MAZEGAKI = 0
 
 INPUT_MODE_TRANSITION_RULE = {
     u'\'': {
@@ -708,7 +707,7 @@ class Context(object):
             output = self.__current_state().rom_kana_state[0]
             # mazegaki start?
             if not isinstance(output, unicode) and \
-                    output == START_MAZEGAKI:
+                    output == tutcode_command.COMMAND_MAZEGAKI:
                 self.__current_state().conv_state = CONV_STATE_START
                 self.__current_state().rom_kana_state = (u'', u'',
                                                          self.__tutcode_rule_tree)
