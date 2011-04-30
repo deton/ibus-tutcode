@@ -24,13 +24,9 @@
 # 02110-1301, USA.
 
 from __future__ import with_statement
-import itertools
 import os.path
-import socket
 import re
-import unicodedata
 from tutcode_rule import TUTCODE_RULE
-import struct
 import mmap
 
 CONV_STATE_NONE, \
