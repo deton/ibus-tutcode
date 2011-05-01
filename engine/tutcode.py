@@ -373,8 +373,7 @@ class Context(object):
         input_mode = INPUT_MODE_HIRAGANA
         if self.__current_state().input_mode == INPUT_MODE_HIRAGANA:
             input_mode = INPUT_MODE_KATAKANA
-        self.reset()
-        self.activate_input_mode(input_mode)
+        self.__current_state().input_mode = input_mode
 
     def press_key(self, keystr):
         '''Process a key press event KEYSTR.
@@ -415,30 +414,25 @@ class Context(object):
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
 
-            self.__current_state().rom_kana_state = \
+            output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
-            output = self.__current_state().rom_kana_state[0]
-            # command?
-            if not isinstance(output, unicode):
-                if output == tutcode_command.COMMAND_MAZEGAKI:
+            # tutcode_command?
+            if not isinstance(pending, unicode):
+                if pending == tutcode_command.COMMAND_MAZEGAKI:
                     self.__current_state().conv_state = CONV_STATE_START
-                    self.__current_state().rom_kana_state = (u'', u'',
-                            self.__tutcode_rule_tree)
-                elif output == tutcode_command.COMMAND_ABBREV:
+                elif pending == tutcode_command.COMMAND_ABBREV:
                     self.__current_state().conv_state = CONV_STATE_START
-                    self.__current_state().rom_kana_state = (u'', u'',
-                            self.__tutcode_rule_tree)
                     self.__current_state().abbrev = True
-                elif output == tutcode_command.COMMAND_TOGGLE_KANA:
+                elif pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
+                self.__current_state().rom_kana_state = (output, u'', tree)
                 return (True, u'')
+            else:
+                self.__current_state().rom_kana_state = (output, pending, tree)
 
             if self.__current_state().conv_state == CONV_STATE_NONE and \
                     len(output) > 0:
-                self.__current_state().rom_kana_state = \
-                    (u'',
-                     self.__current_state().rom_kana_state[1],
-                     self.__current_state().rom_kana_state[2])
+                self.__current_state().rom_kana_state = (u'', pending, tree)
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     return (True, u'')
@@ -482,16 +476,15 @@ class Context(object):
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
 
-            self.__current_state().rom_kana_state = \
+            output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
-            output = self.__current_state().rom_kana_state[0]
-            if not isinstance(output, unicode):
-                # ignore mazegaki start
-                if output == tutcode_command.COMMAND_MAZEGAKI:
-                    self.__current_state().rom_kana_state = (u'', u'',
-                            self.__tutcode_rule_tree)
-                elif output == tutcode_command.COMMAND_TOGGLE_KANA:
+            if not isinstance(pending, unicode):
+                if pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
+                # ignore mazegaki start
+                self.__current_state().rom_kana_state = (output, u'', tree)
+            else:
+                self.__current_state().rom_kana_state = (output, pending, tree)
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
@@ -674,8 +667,8 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
         elif isinstance(next_output, tuple) or isinstance(next_output, list):
             katakana, hiragana = next_output
             output += self.__convert_kana_by_input_mode(katakana, hiragana)
-        else: # functional sequence (ex. mazegaki start)
-            output = next_output
+        else: # tutcode_command (ex. mazegaki start)
+            return (output, next_output, self.__tutcode_rule_tree)
         next_state = (output, u'', self.__tutcode_rule_tree)
         return next_state
 
