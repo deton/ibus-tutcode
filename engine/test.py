@@ -25,6 +25,7 @@ class TestTUTCode(unittest.TestCase):
                 raise RuntimeError('mazegaki.dic not found')
             with open(sysdict_path, 'a') as tp:
                 with open(s_dict_path, 'r') as fp:
+                    tp.write(u'request /リクエスト/\n'.encode('EUC-JP'))
                     for line in fp:
                         tp.write(line)
 
@@ -130,6 +131,60 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(output, u'惜')
         self.__tutcode.tutcode_rule = tutcode.RULE_TUTCODE
         self.__tutcode.reset()
+
+    def testabbrev(self):
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'/')
+        self.__tutcode.press_key(u'r')
+        self.__tutcode.press_key(u'e')
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'u')
+        self.__tutcode.press_key(u'e')
+        self.__tutcode.press_key(u's')
+        self.__tutcode.press_key(u't')
+        self.assertEqual(self.__tutcode.preedit, u'▽request')
+        self.__tutcode.press_key(u' ')
+        self.assertEqual(self.__tutcode.preedit, u'▼リクエスト')
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'o')
+        handled, output = self.__tutcode.press_key(u' ')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'・')
+
+        self.__tutcode.reset();
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'/')
+        handled, output = self.__tutcode.press_key(u']')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__tutcode.preedit, u'▽]')
+
+        # Ignore "" in abbrev mode (Issue#16).
+        self.__tutcode.reset();
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'/')
+        handled, output = self.__tutcode.press_key(u'(')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__tutcode.preedit, u'▽(')
+
+        self.__tutcode.reset();
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'/')
+        handled, output = self.__tutcode.press_key(u'A')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__tutcode.preedit, u'▽A')
 
 if __name__ == '__main__':
     unittest.main()
