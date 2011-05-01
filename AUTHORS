@@ -1,1 +1,9 @@
-Peng Huang <shawn.p.huang@gmail.com>
+The implementation is based on ibus-skk and ibus-tmpl.
+
+KIHARA Hideto <deton@m1.interq.or.jp>
+Daiki Ueno <ueno@unixuser.org> ibus-skk
+TAGOMORI Satoshi <sigh@shirts.st> ibus-skk
+OHASHI Hideya <ohachige@gmail.com> ibus-skk
+Takao Fujiwara <takao.fujiwara1@gmail.com> ibus-anthy
+Hideaki ABE <abe.sendai@gmail.com> ibus-anthy
+Huang Peng <shawn.p.huang@gmail.com> ibus-tmpl, ibus-anthy, ibus-pinyin

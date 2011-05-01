@@ -7,7 +7,7 @@
 	<version>@VERSION@</version>
 	<author>KIHARA Hideto &lt;deton@m1.interq.or.jp&gt;</author>
 	<license>GPL</license>
-	<homepage>http://code.google.com/p/ibus</homepage>
+	<homepage>http://github.com/deton/ibus-tutcode</homepage>
 	<textdomain>ibus-tutcode</textdomain>
 
 	<engines>

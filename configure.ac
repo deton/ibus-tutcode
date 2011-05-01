@@ -30,7 +30,7 @@ m4_define(ibus_maybe_datestamp,
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
 
-AC_INIT([package_name], [ibus_version], [], [package_name])
+AC_INIT([package_name], [ibus_version], [http://github.com/deton/ibus-tutcode/issues], [package_name])
 AM_INIT_AUTOMAKE([1.10])
 
 #check python
