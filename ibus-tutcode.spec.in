@@ -1,21 +1,17 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%define mod_path ibus-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@
 Name:       @PACKAGE_NAME@
 Version:    @PACKAGE_VERSION@
 Release:    1%{?dist}
 Summary:    Japanese TUT-Code input method for ibus
 License:    GPLv2+
 Group:      System Environment/Libraries
-URL:        http://code.google.com/p/ibus/
-Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
+URL:        http://github.com/deton/ibus-tutcode
+Source0:    http://cloud.github.com/downloads/deton/ibus-tutcode/%{name}-%{version}.tar.gz
 
-BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:	noarch
 BuildRequires:  gettext-devel
 BuildRequires:  python
 
 Requires:   ibus
-Requires:   python-tutcode
 
 %description
 A Japanese TUT-Code Input Method Engine for ibus.
@@ -24,7 +20,7 @@ A Japanese TUT-Code Input Method Engine for ibus.
 %setup -q
 
 %build
-%configure --disable-static
+%configure
 # make -C po update-gmo
 make %{?_smp_mflags}
 
@@ -40,12 +36,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
-# %dir %{python_sitearch}/ibus
-# %{python_sitearch}/ibus/*
 %dir %{_datadir}/ibus-tutcode
 %{_datadir}/ibus-tutcode
-%{_bindir}/ibus-engine-tutcode
-%{_datadir}/ibus/engine/tutcode.engine
+%{_libexecdir}/ibus-*-tutcode
+%{_datadir}/ibus/component/tutcode.xml
 
 %changelog
 * @DATE_DISPLAY@ KIHARA Hideto <deton@m1.interq.or.jp> - @PACKAGE_VERSION@-1
