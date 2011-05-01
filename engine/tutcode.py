@@ -27,7 +27,6 @@ from __future__ import with_statement
 import os.path
 import re
 import tutcode_command
-from tutcode_rule import TUTCODE_RULE
 import mmap
 
 CONV_STATE_NONE, \
@@ -37,9 +36,15 @@ CONV_STATE_SELECT = range(3)
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA = range(2)
 
-ROM_KANA_TUTCODE = 0
+RULE_TUTCODE, \
+RULE_TCODE, \
+RULE_TRYCODE = range(3)
 
-ROM_KANA_RULES = (TUTCODE_RULE,)
+RULE_NAMES = {
+    RULE_TUTCODE: 'tutcode_rule',
+    RULE_TCODE: 'tcode_rule',
+    RULE_TRYCODE: 'trycode_rule'
+}
 
 TRANSLATED_STRINGS = {
     u'dict-edit-prompt': u'DictEdit'
@@ -337,7 +342,7 @@ def compile_tutcode_rule(rule):
     return tree
 
 class CandidateSelector(object):
-    PAGE_SIZE = 7
+    PAGE_SIZE = 10
     PAGINATION_START = 4
 
     def __init__(self, page_size=PAGE_SIZE, pagination_start=PAGINATION_START):
@@ -479,7 +484,7 @@ class Context(object):
 
         self.usrdict = usrdict
         self.sysdict = sysdict
-        self.tutcode_rule = ROM_KANA_TUTCODE
+        self.tutcode_rule = RULE_TUTCODE
         self.translated_strings = dict(TRANSLATED_STRINGS)
         self.reset()
 
@@ -524,7 +529,9 @@ class Context(object):
     purge_keys = property(lambda self: self.__purge_keys, set_purge_keys)
 
     def __update_tutcode_rule_tree(self):
-        rule = dict(ROM_KANA_RULES[self.__tutcode_rule])
+        rulename = RULE_NAMES[self.__tutcode_rule]
+        exec "from " + rulename + " import TUTCODE_RULE"
+        rule = dict(TUTCODE_RULE)
         rule.update(self.custom_tutcode_rule)
         self.__tutcode_rule_tree = compile_tutcode_rule(rule)
         
