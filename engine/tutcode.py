@@ -531,8 +531,8 @@ class Context(object):
 
     def __update_tutcode_rule_tree(self):
         rulename = RULE_NAMES[self.__tutcode_rule]
-        exec "from " + rulename + " import TUTCODE_RULE"
-        rule = dict(TUTCODE_RULE)
+        rulemod = __import__(rulename)
+        rule = dict(rulemod.TUTCODE_RULE)
         rule.update(self.custom_tutcode_rule)
         self.__tutcode_rule_tree = compile_tutcode_rule(rule)
         

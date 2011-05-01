@@ -108,5 +108,28 @@ class TestTUTCode(unittest.TestCase):
         self.__tutcode.press_key(u' ')
         self.assertEqual(self.__tutcode.preedit, u'▼娃')
 
+    def testtcode(self):
+        self.__tutcode.reset()
+        self.__tutcode.tutcode_rule = tutcode.RULE_TCODE
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u',')
+        handled, output = self.__tutcode.press_key(u'1')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'借')
+        self.__tutcode.tutcode_rule = tutcode.RULE_TUTCODE
+        self.__tutcode.reset()
+
+    def testtrycode(self):
+        self.__tutcode.reset()
+        self.__tutcode.tutcode_rule = tutcode.RULE_TRYCODE
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u' ')
+        self.__tutcode.press_key(u',')
+        handled, output = self.__tutcode.press_key(u'1')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'惜')
+        self.__tutcode.tutcode_rule = tutcode.RULE_TUTCODE
+        self.__tutcode.reset()
+
 if __name__ == '__main__':
     unittest.main()
