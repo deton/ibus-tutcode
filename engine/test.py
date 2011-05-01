@@ -4,6 +4,7 @@ from __future__ import with_statement
 import unittest
 import os, os.path
 import tutcode
+import skkdict
 from ibus import modifier
 
 class TestTUTCode(unittest.TestCase):
@@ -29,8 +30,8 @@ class TestTUTCode(unittest.TestCase):
                     for line in fp:
                         tp.write(line)
 
-        self.__tutcode = tutcode.Context(usrdict=tutcode.UsrDict(usrdict_path),
-                                 sysdict=tutcode.SysDict(sysdict_path),
+        self.__tutcode = tutcode.Context(usrdict=skkdict.UsrDict(usrdict_path),
+                                 sysdict=skkdict.SysDict(sysdict_path),
                                  candidate_selector=tutcode.CandidateSelector())
 
     def testusrdict(self):
@@ -39,7 +40,7 @@ class TestTUTCode(unittest.TestCase):
         with open(usrdict_path, 'w+') as fp:
             fp.write(u'あい /愛/\n'.encode('EUC-JP'))
         try:
-            usrdict = tutcode.UsrDict(usrdict_path, 'UTF-8')
+            usrdict = skkdict.UsrDict(usrdict_path, 'UTF-8')
             self.assertNotEqual(usrdict, None)
             self.assertTrue(usrdict.read_only)
         except Exception, e:

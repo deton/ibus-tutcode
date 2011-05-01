@@ -23,8 +23,11 @@ engine_tutcode_PYTHON = \
 	factory.py \
 	main.py \
 	tutcode.py \
+	skkdict.py \
 	tutcode_command.py \
 	tutcode_rule.py \
+	tcode_rule.py \
+	trycode_rule.py \
 	$(NULL)
 engine_tutcodedir = $(pkgdatadir)/engine
 

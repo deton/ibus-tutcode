@@ -23,6 +23,7 @@ import ibus
 import engine
 import sys, os, os.path
 import tutcode
+import skkdict
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus-tutcode", a)
@@ -54,10 +55,10 @@ class EngineFactory(ibus.EngineFactoryBase):
             use_mmap = _config.get_value('use_mmap')
             instances = list()
             for path in _config.sysdict_paths:
-                instances.append(tutcode.SysDict(path, use_mmap=use_mmap))
-            return tutcode.MultiSysDict(instances)
+                instances.append(skkdict.SysDict(path, use_mmap=use_mmap))
+            return skkdict.MultiSysDict(instances)
         except:
-            return tutcode.EmptyDict()
+            return skkdict.EmptyDict()
 
     def __config_reloaded_cb(self, bus_config):
         engine.Engine.config = config.Config(self.__bus)

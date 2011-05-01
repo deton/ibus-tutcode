@@ -27,6 +27,7 @@ from ibus import keysyms
 from ibus import modifier
 import sys, os, os.path, time
 import tutcode
+import skkdict
 try:
     from gtk import clipboard_get
 except ImportError:
@@ -145,7 +146,7 @@ class Engine(ibus.EngineBase):
                                                       self.__select_keys,
                                                       page_size,
                                                       pagination_start)
-        usrdict = tutcode.UsrDict(self.config.usrdict_path)
+        usrdict = skkdict.UsrDict(self.config.usrdict_path)
         self.__tutcode = tutcode.Context(usrdict, self.sysdict,
                                  self.__candidate_selector)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
@@ -359,7 +360,7 @@ class Engine(ibus.EngineBase):
         
     def __possibly_update_config(self):
         if self.__tutcode.usrdict.path != self.config.usrdict_path:
-            self.__tutcode.usrdict = tutcode.UsrDict(self.config.usrdict_path)
+            self.__tutcode.usrdict = skkdict.UsrDict(self.config.usrdict_path)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
 
