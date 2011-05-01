@@ -111,9 +111,9 @@ class Engine(ibus.EngineBase):
     config = None
     sysdict = None
 
-    __select_keys = [u'a', u's', u'd', u'f', u'j', u'k', u'l',
-                     u'q', u'w', u'e', u'r', u'u', u'i', u'o',
-                     u'z', u'x', u'c', u'v', u'm', u',', u'.']
+    __select_keys = [u'q', u'w', u'e', u'r', u't', u'y', u'u', u'i', u'o', u'p',
+                     u'a', u's', u'd', u'f', u'g', u'h', u'j', u'k', u'l', u';',
+                     u'z', u'x', u'c', u'v', u'b', u'n', u'm', u',', u'.', u'/']
      
     __input_mode_prop_names = {
         tutcode.INPUT_MODE_HIRAGANA : u"InputMode.Hiragana",
