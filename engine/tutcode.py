@@ -262,7 +262,7 @@ class UsrDict(DictBase):
                     self.__dict[midasi] = self.split_candidates(candidates)
             self.__read_only = False
         except Exception:
-            print "Exception on reading usrdict", self.__path #, sys.exc_info()[:1]
+            # print "Exception on reading usrdict", self.__path #, sys.exc_info()[:1]
             self.__read_only = True
         self.__dict_changed = False
         self.__selection_history = list()
