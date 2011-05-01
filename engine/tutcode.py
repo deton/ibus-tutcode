@@ -282,9 +282,10 @@ class UsrDict(DictBase):
             if coding_system:
                 fp.write(';;; -*- coding: %s -*-\n' % coding_system)
             for midasi in sorted(self.__dict):
-                line = midasi + u' /' + \
-                    self.join_candidates(self.__dict[midasi]) + '/\n'
-                fp.write(line.encode(self.__encoding))
+                candidates = self.join_candidates(self.__dict[midasi])
+                if len(candidates) > 0:
+                    line = midasi + u' /' + candidates + '/\n'
+                    fp.write(line.encode(self.__encoding))
 
     def select_candidate(self, midasi, candidate):
         '''Mark CANDIDATE was selected as the conversion result of MIDASI.'''
