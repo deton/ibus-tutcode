@@ -450,12 +450,14 @@ class Context(object):
             # If midasi is empty, switch back to CONV_STATE_NONE
             # instead of CONV_STATE_SELECT.
             if str(key) in self.__conv_keys and \
-                    len(self.__current_state().rom_kana_state[0]) == 0:
+                    len(self.__current_state().rom_kana_state[0]) == 0 and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
                 self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
 
             # Start mazegaki conversion.
-            if str(key) in self.__conv_keys:
+            if str(key) in self.__conv_keys and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
                 self.__current_state().conv_state = CONV_STATE_SELECT
                 midasi = self.__current_state().rom_kana_state[0]
                 self.__activate_candidate_selector(midasi)
