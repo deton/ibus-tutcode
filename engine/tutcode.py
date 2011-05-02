@@ -29,7 +29,8 @@ import tutcode_command
 
 CONV_STATE_NONE, \
 CONV_STATE_START, \
-CONV_STATE_SELECT = range(3)
+CONV_STATE_SELECT, \
+CONV_STATE_BUSHU = range(4)
 
 INPUT_MODE_HIRAGANA, \
 INPUT_MODE_KATAKANA = range(2)
@@ -369,6 +370,15 @@ class Context(object):
         return len(pending) > 0 and \
             key.letter in self.__current_state().rom_kana_state[2]
 
+    def __key_is_ctrl(self, key):
+        '''key is ctrl+key and non-ASCII characters?'''
+        if key.is_ctrl() or \
+                str(key) in ('return', 'escape', 'backspace') or \
+                (len(key.letter) == 1 and \
+                     (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
+            return True
+        return False
+
     def __toggle_kana_mode(self):
         input_mode = INPUT_MODE_HIRAGANA
         if self.__current_state().input_mode == INPUT_MODE_HIRAGANA:
@@ -389,7 +399,8 @@ class Context(object):
                     self.__current_state().conv_state == CONV_STATE_NONE:
                 self.__abort_dict_edit()
             elif self.__current_state().conv_state in (CONV_STATE_NONE,
-                                                       CONV_STATE_START):
+                                                       CONV_STATE_START,
+                                                       CONV_STATE_BUSHU):
                 input_mode = self.__current_state().input_mode
                 self.reset()
                 self.activate_input_mode(input_mode)
@@ -408,10 +419,7 @@ class Context(object):
                 return (True, self.__leave_dict_edit())
 
             # Ignore ctrl+key and non-ASCII characters.
-            if key.is_ctrl() or \
-                    str(key) in ('return', 'escape', 'backspace') or \
-                    (len(key.letter) == 1 and \
-                         (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
+            if self.__key_is_ctrl(key):
                 return (False, u'')
 
             output, pending, tree = \
@@ -423,6 +431,8 @@ class Context(object):
                 elif pending == tutcode_command.COMMAND_ABBREV:
                     self.__current_state().conv_state = CONV_STATE_START
                     self.__current_state().abbrev = True
+                elif pending == tutcode_command.COMMAND_BUSHU:
+                    self.__current_state().conv_state = CONV_STATE_BUSHU
                 elif pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
                 self.__current_state().rom_kana_state = (output, u'', tree)
@@ -470,10 +480,7 @@ class Context(object):
                 return (True, u'')
 
             # Ignore ctrl+key and non-ASCII characters.
-            if key.is_ctrl() or \
-                    str(key) in ('return', 'escape', 'backspace') or \
-                    (len(key.letter) == 1 and \
-                         (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
+            if self.__key_is_ctrl(key):
                 return (False, u'')
 
             output, pending, tree = \
@@ -481,10 +488,9 @@ class Context(object):
             if not isinstance(pending, unicode):
                 if pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
-                # ignore mazegaki start
-                self.__current_state().rom_kana_state = (output, u'', tree)
-            else:
-                self.__current_state().rom_kana_state = (output, pending, tree)
+                # ignore mazegaki/bushu start
+                pending = u''
+            self.__current_state().rom_kana_state = (output, pending, tree)
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
@@ -514,6 +520,41 @@ class Context(object):
                 if str(key) in self.__commit_keys:
                     return (True, output)
                 return (True, output + self.press_key(str(key))[1])
+
+        elif self.__current_state().conv_state == CONV_STATE_BUSHU:
+            if str(key) in self.__commit_keys:
+                output = self.kakutei()
+                if self.dict_edit_level() > 0:
+                    self.__current_state().dict_edit_output += output
+                    return (True, u'')
+                return (True, output)
+
+            # If midasi is empty, switch back to CONV_STATE_NONE
+            # instead of CONV_STATE_SELECT.
+            if str(key) in self.__conv_keys and \
+                    len(self.__current_state().rom_kana_state[0]) == 0:
+                self.__current_state().conv_state = CONV_STATE_NONE
+                return (True, u'')
+
+            # Ignore mazegaki conversion keys.
+            if str(key) in self.__conv_keys:
+                return (True, u'')
+
+            # Ignore ctrl+key and non-ASCII characters.
+            if self.__key_is_ctrl(key):
+                return (False, u'')
+
+            output, pending, tree = \
+                self.__convert_kana(key, self.__current_state().rom_kana_state)
+            if not isinstance(pending, unicode):
+                if pending == tutcode_command.COMMAND_TOGGLE_KANA:
+                    self.__toggle_kana_mode()
+                # ignore mazegaki/bushu start
+                pending = u''
+            elif len(output) >= 2
+                output = self.__convert_bushu(output)
+            self.__current_state().rom_kana_state = (output, pending, tree)
+            return (True, u'')
 
     def __delete_char_from_rom_kana_state(self, state):
         tree = self.__tutcode_rule_tree
@@ -677,3 +718,9 @@ elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
             return hiragana
         elif self.__current_state().input_mode == INPUT_MODE_KATAKANA:
             return katakana
+
+    def __convert_bushu(self, str):
+        c1 = str[-2]
+        c2 = str[-1]
+        #TODO
+        return c1

@@ -3,6 +3,7 @@
 import tutcode_command
 TUTCODE_RULE = {
     u'fj': tutcode_command.COMMAND_MAZEGAKI,
+    u'jf': tutcode_command.COMMAND_BUSHU,
     u',1': u'借',
     u'.1': u'須',
     u'p1': u'象',
@@ -393,7 +394,6 @@ TUTCODE_RULE = {
     u'sf': u'予',
     u';f': u'2',
     u'qf': u'ぎ',
-    u'jf': u'◆',
     u'kf': u'0',
     u'xf': u'沢',
     u'bf': u'清',

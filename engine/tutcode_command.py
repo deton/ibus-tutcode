@@ -2,4 +2,5 @@
 # -*- coding: utf-8 -*-
 COMMAND_TOGGLE_KANA, \
 COMMAND_MAZEGAKI, \
-COMMAND_ABBREV = range(3)
+COMMAND_ABBREV, \
+COMMAND_BUSHU = range(4)
