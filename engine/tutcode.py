@@ -521,10 +521,7 @@ class Context(object):
         tree = self.__tutcode_rule_tree
         output, pending, _tree = state
         if pending:
-            pending = pending[:-1]
-            for letter in pending:
-                tree = tree[letter]
-            return (output, pending, tree)
+            return (output, u'', tree) # clear pending like tc2
         elif output:
             return (output[:-1], u'', tree)
 
