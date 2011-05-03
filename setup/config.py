@@ -35,7 +35,8 @@ class Config:
         'next_keys': (' ', 'ctrl+n'),
         'prev_keys': ('ctrl+p',),
         'commit_keys': ('ctrl+m', 'return'),
-        'purge_keys': ('!',)
+        'purge_keys': ('!',),
+        'vi_escape_keys': ('escape', 'ctrl+[')
         }
 
     __modified = dict()

@@ -153,7 +153,8 @@ class Engine(ibus.EngineBase):
                                  self.__candidate_selector)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
-        self.__tutcode.use_with_vi = self.config.get_value('use_with_vi')
+        self.__use_with_vi = self.config.get_value('use_with_vi')
+        self.__vi_escape_keys = self.config.get_value('vi_escape_keys')
         self.__tutcode.translated_strings['dict-edit-prompt'] = \
             _(u'DictEdit').decode('UTF-8')
         self.__tutcode.custom_tutcode_rule = \
@@ -294,6 +295,10 @@ class Engine(ibus.EngineBase):
             # enabled and the user press CapsLock + 'j':
             # http://github.com/ueno/ibus-skk/issues/#issue/22
             keychr = u'ctrl+' + keychr.lower()
+        if keychr in self.__vi_escape_keys and self.__use_with_vi:
+            self.__tutcode.reset()
+            self.property_activate(u"InputMode.Latin", ibus.PROP_STATE_CHECKED)
+            return False # pass 'escape' to vi
         return self.__tutcode_press_key(keychr)
 
     def __check_handled(self, handled, output):
