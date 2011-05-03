@@ -31,8 +31,9 @@ CONV_STATE_NONE, \
 CONV_STATE_START, \
 CONV_STATE_SELECT = range(3)
 
+INPUT_MODE_LATIN, \
 INPUT_MODE_HIRAGANA, \
-INPUT_MODE_KATAKANA = range(2)
+INPUT_MODE_KATAKANA = range(3)
 
 RULE_TUTCODE, \
 RULE_TCODE, \
@@ -200,6 +201,8 @@ class Context(object):
         self.__state_stack = list()
         self.__state_stack.append(State())
 
+        self.on_keys = ('ctrl+\\',)
+        self.off_keys = ('ctrl+\\',)
         self.cancel_keys = ('ctrl+g', 'ctrl+u')
         self.backspace_keys = ('ctrl+h', 'backspace')
         self.conv_keys = (' ', 'ctrl+n')
@@ -361,6 +364,15 @@ class Context(object):
         True if the event was handled internally (otherwise False),
         and OUTPUT is a committable string (if any).'''
         key = Key(keystr)
+
+        # print "input_mode", self.__current_state().input_mode, str(key)
+        if self.__current_state().input_mode == INPUT_MODE_LATIN:
+            if str(key) in self.on_keys:
+                self.activate_input_mode(INPUT_MODE_HIRAGANA)
+                return (True, u'')
+            if self.dict_edit_level() <= 0:
+                return (False, u'')
+
         if str(key) in self.cancel_keys:
             if self.dict_edit_level() > 0 and \
                     self.__current_state().conv_state == CONV_STATE_NONE:
@@ -384,12 +396,22 @@ class Context(object):
             if self.dict_edit_level() > 0 and str(key) in self.commit_keys:
                 return (True, self.__leave_dict_edit())
 
+            if str(key) in self.off_keys and \
+                    self.__current_state().input_mode != INPUT_MODE_LATIN:
+                self.activate_input_mode(INPUT_MODE_LATIN)
+                return (True, u'')
+
             # Ignore ctrl+key and non-ASCII characters.
             if key.is_ctrl() or \
                     str(key) in ('return', 'escape', 'backspace') or \
                     (len(key.letter) == 1 and \
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
+
+            if self.__current_state().input_mode == INPUT_MODE_LATIN and \
+                    self.dict_edit_level() > 0:
+                self.__current_state().dict_edit_output += key.letter
+                return (True, u'')
 
             output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
@@ -440,12 +462,9 @@ class Context(object):
                 self.__activate_candidate_selector(midasi)
                 return (True, u'')
 
-            # If in abbrev mode, just append the letter to the output.
-            if self.__current_state().abbrev:
-                self.__current_state().rom_kana_state = \
-                    (self.__current_state().rom_kana_state[0] + key.letter,
-                     u'',
-                     self.__tutcode_rule_tree)
+            if str(key) in self.off_keys:
+                self.reset()
+                self.activate_input_mode(INPUT_MODE_LATIN)
                 return (True, u'')
 
             # Ignore ctrl+key and non-ASCII characters.
@@ -454,6 +473,14 @@ class Context(object):
                     (len(key.letter) == 1 and \
                          (0x20 > ord(key.letter) or ord(key.letter) > 0x7E)):
                 return (False, u'')
+
+            # If in abbrev mode, just append the letter to the output.
+            if self.__current_state().abbrev:
+                self.__current_state().rom_kana_state = \
+                    (self.__current_state().rom_kana_state[0] + key.letter,
+                     u'',
+                     self.__tutcode_rule_tree)
+                return (True, u'')
 
             output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)

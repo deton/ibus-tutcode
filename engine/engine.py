@@ -117,6 +117,7 @@ class Engine(ibus.EngineBase):
                      u'z', u'x', u'c', u'v', u'b', u'n', u'm', u',', u'.', u'/']
      
     __input_mode_prop_names = {
+        tutcode.INPUT_MODE_LATIN : u"InputMode.Latin",
         tutcode.INPUT_MODE_HIRAGANA : u"InputMode.Hiragana",
         tutcode.INPUT_MODE_KATAKANA : u"InputMode.Katakana"
         }
@@ -126,6 +127,7 @@ class Engine(ibus.EngineBase):
         __prop_name_input_modes[val] = key
 
     __input_mode_labels = {
+        tutcode.INPUT_MODE_LATIN : u"_A",
         tutcode.INPUT_MODE_HIRAGANA : u"あ",
         tutcode.INPUT_MODE_KATAKANA : u"ア"
         }
@@ -155,6 +157,8 @@ class Engine(ibus.EngineBase):
             _(u'DictEdit').decode('UTF-8')
         self.__tutcode.custom_tutcode_rule = \
             self.config.get_value('custom_tutcode_rule')
+        self.__tutcode.on_keys = self.config.get_value('on_keys')
+        self.__tutcode.off_keys = self.config.get_value('off_keys')
         self.__tutcode.cancel_keys = self.config.get_value('cancel_keys')
         self.__tutcode.backspace_keys = self.config.get_value('backspace_keys')
         self.__tutcode.conv_keys = self.config.get_value('conv_keys')
@@ -181,6 +185,9 @@ class Engine(ibus.EngineBase):
         self.__prop_dict[u"InputMode"] = input_mode_prop
 
         props = ibus.PropList()
+        props.append(ibus.Property(key=u"InputMode.Latin",
+                                   type=ibus.PROP_TYPE_RADIO,
+                                   label=_(u"Latin")))
         props.append(ibus.Property(key=u"InputMode.Hiragana",
                                    type=ibus.PROP_TYPE_RADIO,
                                    label=_(u"Hiragana")))
@@ -366,6 +373,7 @@ class Engine(ibus.EngineBase):
 
     # ABBREV_CURSOR_COLOR = (65, 105, 225)
     # INPUT_MODE_CURSOR_COLORS = {
+    #     tutcode.INPUT_MODE_LATIN: (139, 139, 131),
     #     tutcode.INPUT_MODE_HIRAGANA: (139, 62, 47),
     #     tutcode.INPUT_MODE_KATAKANA: (34, 139, 34)
     #     }
@@ -453,8 +461,16 @@ class Engine(ibus.EngineBase):
         self.reset()
 
     def reset(self):
+        # keep input_mode for backspace or ctrl+a in INPUT_MODE_LATIN.
+        input_mode = self.__tutcode.input_mode
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(input_mode)
+
+    def enable(self):
         self.__tutcode.reset()
         self.__tutcode.activate_input_mode(self.__initial_input_mode)
+        # suppress activate_input_mode() in focus_in
+        self.__suspended_mode = None
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)

@@ -26,6 +26,8 @@ class Config:
     # config mechanism.
     __file_defaults = {
         'custom_tutcode_rule': dict(),
+        'on_keys': ('ctrl+\\',),
+        'off_keys': ('ctrl+\\',),
         'cancel_keys': ('ctrl+g', 'ctrl+u'),
         'backspace_keys': ('ctrl+h', 'backspace'),
         'conv_keys': (' ','ctrl+n'),
