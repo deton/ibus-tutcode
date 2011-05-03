@@ -153,6 +153,7 @@ class Engine(ibus.EngineBase):
                                  self.__candidate_selector)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
+        self.__tutcode.use_with_vi = self.config.get_value('use_with_vi')
         self.__tutcode.translated_strings['dict-edit-prompt'] = \
             _(u'DictEdit').decode('UTF-8')
         self.__tutcode.custom_tutcode_rule = \

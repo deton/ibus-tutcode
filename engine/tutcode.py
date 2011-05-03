@@ -215,6 +215,7 @@ class Context(object):
         self.sysdict = sysdict
         self.tutcode_rule = RULE_TUTCODE
         self.translated_strings = dict(TRANSLATED_STRINGS)
+        self.use_with_vi = False
         self.reset()
 
     def __check_dict(self, _dict):
@@ -391,6 +392,11 @@ class Context(object):
 
         if str(key) in self.backspace_keys:
             return self.delete_char()
+
+        if str(key) == 'escape' and self.use_with_vi:
+            self.reset()
+            self.activate_input_mode(INPUT_MODE_LATIN)
+            return (False, u'') # pass 'escape' to vi
 
         if self.__current_state().conv_state == CONV_STATE_NONE:
             if self.dict_edit_level() > 0 and str(key) in self.commit_keys:
