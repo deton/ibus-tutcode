@@ -206,6 +206,9 @@ class TestTUTCode(unittest.TestCase):
         # alternative char
         output = self.__tutcode.convert_bushu(u'▲ア可')
         self.assertEqual(output, u'阿')
+        # subtraction
+        output = self.__tutcode.convert_bushu(u'▲頭豆')
+        self.assertEqual(output, u'頁')
 
 if __name__ == '__main__':
     unittest.main()

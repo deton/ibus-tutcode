@@ -753,6 +753,8 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         output = self.__convert_bushu_compose(c1, c2)
         if output:
             return output
+
+        # alternative char
         a1 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR.get(c1)
         a2 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR.get(c2)
         if a1 or a2:
@@ -763,6 +765,37 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
             output = self.__convert_bushu_compose(c1, c2)
             if output:
                 return output
+
+        # check whether composed character is new
+        def _isnewchar(nc):
+            if nc is None:
+                return False
+            if nc != c1 and nc != c2:
+                return True
+            return False
+
+        # decompose
+        tc11 = tc12 = None
+        rows = [(row[0], row[1]) for row in tutcode_bushudic.TUTCODE_BUSHUDIC
+                if row[2] == c1]
+        if rows:
+            tc11, tc12 = rows[0]
+        tc21 = tc22 = None
+        rows = [(row[0], row[1]) for row in tutcode_bushudic.TUTCODE_BUSHUDIC
+                if row[2] == c2]
+        if rows:
+            tc21, tc22 = rows[0]
+
+        # subtraction
+        if tc11 == c2 and _isnewchar(tc12):
+            return tc12
+        if tc12 == c2 and _isnewchar(tc11):
+            return tc11
+        if tc21 == c1 and _isnewchar(tc22):
+            return tc22
+        if tc22 == c1 and _isnewchar(tc21):
+            return tc21
+
         #TODO
         return None
 
