@@ -242,10 +242,11 @@ class TestTUTCode(unittest.TestCase):
         self.__tutcode.press_key(u'l')
         self.__tutcode.press_key(u'a')
         self.assertEqual(self.__tutcode.preedit, u'▲')
-        handled, output = self.__tutcode.press_key(u'backspace')
-        self.assertTrue(handled)
-        self.assertEqual(output, u'')
-        self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
+        self.__tutcode.press_key(u'backspace')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'j')
+        self.assertEqual(self.__tutcode.preedit, u'▽')
 
     def testbushuconv(self):
         output = self.__tutcode.convert_bushu(u'▲言▲▲西一')
