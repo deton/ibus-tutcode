@@ -594,6 +594,7 @@ class Context(object):
             output = output[:-1]
             if output:
                 return (output, u'', tree)
+        return None
 
     def delete_char(self):
         '''Delete a character at the end of the buffer.'''
@@ -605,7 +606,7 @@ class Context(object):
                 return (True, u'')
             return (True, output[:-1])
         if self.__current_state().rom_kana_state:
-            state = self.__delete_char_from_rom_kana_state(\
+            state = self.__delete_char_from_rom_kana_state(
                 self.__current_state().rom_kana_state)
             if state:
                 self.__current_state().rom_kana_state = state
@@ -635,7 +636,7 @@ class Context(object):
         if self.__current_state().conv_state == CONV_STATE_SELECT:
             return (False, u'')
         if self.__current_state().rom_kana_state:
-            state = self.__append_text_to_rom_kana_state(\
+            state = self.__append_text_to_rom_kana_state(
                 self.__current_state().rom_kana_state, text)
             if state:
                 self.__current_state().rom_kana_state = state
