@@ -26,6 +26,7 @@
 import re
 from skkdict import DictBase, append_candidates
 import tutcode_command
+import tutcode_bushudic
 
 CONV_STATE_NONE, \
 CONV_STATE_START, \
@@ -432,6 +433,7 @@ class Context(object):
                     self.__current_state().abbrev = True
                 elif pending == tutcode_command.COMMAND_BUSHU:
                     self.__current_state().conv_state = CONV_STATE_BUSHU
+                    output += u'▲'
                 elif pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
                 self.__current_state().rom_kana_state = (output, u'', tree)
@@ -535,14 +537,6 @@ class Context(object):
                     return (True, u'')
                 return (True, output)
 
-            # If midasi is empty, switch back to CONV_STATE_NONE
-            # instead of CONV_STATE_SELECT.
-            if str(key) in self.conv_keys and \
-                    len(self.__current_state().rom_kana_state[0]) == 0 and \
-                    len(self.__current_state().rom_kana_state[1]) == 0:
-                self.__current_state().conv_state = CONV_STATE_NONE
-                return (True, u'')
-
             # Ignore mazegaki conversion keys.
             if str(key) in self.conv_keys and \
                     len(self.__current_state().rom_kana_state[1]) == 0:
@@ -562,10 +556,20 @@ class Context(object):
             if not isinstance(pending, unicode):
                 if pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
-                # ignore mazegaki/bushu start
+                elif pending == tutcode_command.COMMAND_BUSHU:
+                    output += u'▲'
+                # ignore mazegaki start
                 pending = u''
-            elif len(output) >= 2:
+            elif pending == u'':
                 output = self.__convert_bushu(output)
+                if output[0] != u'▲':
+                    input_mode = self.__current_state().input_mode
+                    self.reset()
+                    self.activate_input_mode(input_mode)
+                    if self.dict_edit_level() > 0:
+                        self.__current_state().dict_edit_output += output
+                        return (True, u'')
+                    return (True, output)
             self.__current_state().rom_kana_state = (output, pending, tree)
             return (True, u'')
 
@@ -684,6 +688,11 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
                     prefix + u'▽',
                     self.__current_state().rom_kana_state[0],
                     u'')
+        elif self.__current_state().conv_state == CONV_STATE_BUSHU:
+            return (prompt,
+                    prefix, # rom_kana_state[0] contains some u'▲'
+                    self.__current_state().rom_kana_state[0],
+                    u'')
         else:
             if self.__current_state().midasi:
                 candidate = self.__candidate_selector.candidate()
@@ -730,7 +739,30 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
             return katakana
 
     def __convert_bushu(self, str):
-        c1 = str[-2]
-        c2 = str[-1]
+        m = re.match(u'(.*)▲([^▲])([^▲])$', str)
+        if m:
+            kanji = self.__convert_bushu_char(m.group(2), m.group(3))
+            if kanji:
+                return self.__convert_bushu(m.group(1) + kanji)
+            else:
+                return str[:-1]
+        else:
+            return str
+
+    def __convert_bushu_char(self, c1, c2):
+        output = self.__convert_bushu_compose(c1, c2)
+        if output:
+            return output
         #TODO
-        return c1
+        return None
+
+    def __convert_bushu_compose(self, c1, c2):
+        output = [row[2] for row in tutcode_bushudic.TUTCODE_BUSHUDIC
+                if row[0] == c1 and row[1] == c2]
+        if output:
+            return output[0]
+        output = [row[2] for row in tutcode_bushudic.TUTCODE_BUSHUDIC
+                if row[0] == c2 and row[1] == c1]
+        if output:
+            return output[0]
+        return None
