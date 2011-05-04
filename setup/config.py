@@ -1,3 +1,6 @@
+# vim:set et sts=4 sw=4:
+# -*- coding: utf-8 -*-
+
 from __future__ import with_statement
 import ibus
 import os, os.path, sys
@@ -17,7 +20,8 @@ class Config:
         'page_size': tutcode.CandidateSelector.PAGE_SIZE,
         'pagination_start': tutcode.CandidateSelector.PAGINATION_START,
         'tutcode_rule': tutcode.RULE_TUTCODE,
-        'initial_input_mode': tutcode.INPUT_MODE_HIRAGANA
+        'initial_input_mode': tutcode.INPUT_MODE_HIRAGANA,
+        'use_with_vi': False
         }
 
     # Options which can only be specified in ~/.config/ibus-tutcode.json.
@@ -26,13 +30,16 @@ class Config:
     # config mechanism.
     __file_defaults = {
         'custom_tutcode_rule': dict(),
+        'on_keys': ('ctrl+\\',),
+        'off_keys': ('ctrl+\\',),
         'cancel_keys': ('ctrl+g', 'ctrl+u'),
         'backspace_keys': ('ctrl+h', 'backspace'),
         'conv_keys': (' ','ctrl+n'),
         'next_keys': (' ', 'ctrl+n'),
         'prev_keys': ('ctrl+p',),
         'commit_keys': ('ctrl+m', 'return'),
-        'purge_keys': ('!',)
+        'purge_keys': ('!',),
+        'vi_escape_keys': ('escape', 'ctrl+[')
         }
 
     __modified = dict()
@@ -45,7 +52,7 @@ class Config:
             with open(config_path, 'r') as f:
                 self.__config_from_file = json.load(f)
         except:
-            print "Can't read config file: %s" % self.__config_path_unexpanded
+            print "Can't read config file:", self.__config_path_unexpanded, sys.exc_info()[:1]
             self.__config_from_file = dict()
         self.fetch_all()
 

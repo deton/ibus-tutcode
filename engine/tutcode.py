@@ -32,8 +32,9 @@ CONV_STATE_START, \
 CONV_STATE_SELECT, \
 CONV_STATE_BUSHU = range(4)
 
+INPUT_MODE_LATIN, \
 INPUT_MODE_HIRAGANA, \
-INPUT_MODE_KATAKANA = range(2)
+INPUT_MODE_KATAKANA = range(3)
 
 RULE_TUTCODE, \
 RULE_TCODE, \
@@ -201,13 +202,15 @@ class Context(object):
         self.__state_stack = list()
         self.__state_stack.append(State())
 
-        self.__cancel_keys = ('ctrl+g', 'ctrl+u')
-        self.__backspace_keys = ('ctrl+h', 'backspace')
-        self.__conv_keys = (' ', 'ctrl+n')
-        self.__next_keys = (' ', 'ctrl+n')
-        self.__prev_keys = ('ctrl+p',)
-        self.__commit_keys = ('ctrl+m', 'return')
-        self.__purge_keys = ('!',)
+        self.on_keys = ('ctrl+\\',)
+        self.off_keys = ('ctrl+\\',)
+        self.cancel_keys = ('ctrl+g', 'ctrl+u')
+        self.backspace_keys = ('ctrl+h', 'backspace')
+        self.conv_keys = (' ', 'ctrl+n')
+        self.next_keys = (' ', 'ctrl+n')
+        self.prev_keys = ('ctrl+p',)
+        self.commit_keys = ('ctrl+m', 'return')
+        self.purge_keys = ('!',)
 
         self.usrdict = usrdict
         self.sysdict = sysdict
@@ -231,29 +234,6 @@ class Context(object):
 
     usrdict = property(lambda self: self.__usrdict, set_usrdict)
     sysdict = property(lambda self: self.__sysdict, set_sysdict)
-
-    def set_cancel_keys(self, cancel_keys):
-        self.__cancel_keys = cancel_keys
-    def set_backspace_keys(self, backspace_keys):
-        self.__backspace_keys = backspace_keys
-    def set_conv_keys(self, conv_keys):
-        self.__conv_keys = conv_keys
-    def set_next_keys(self, next_keys):
-        self.__next_keys = next_keys
-    def set_prev_keys(self, prev_keys):
-        self.__prev_keys = prev_keys
-    def set_commit_keys(self, commit_keys):
-        self.__commit_keys = commit_keys
-    def set_purge_keys(self, purge_keys):
-        self.__purge_keys = purge_keys
-
-    cancel_keys = property(lambda self: self.__cancel_keys, set_cancel_keys)
-    backspace_keys = property(lambda self: self.__backspace_keys, set_backspace_keys)
-    conv_keys = property(lambda self: self.__conv_keys, set_conv_keys)
-    next_keys = property(lambda self: self.__next_keys, set_next_keys)
-    prev_keys = property(lambda self: self.__prev_keys, set_prev_keys)
-    commit_keys = property(lambda self: self.__commit_keys, set_commit_keys)
-    purge_keys = property(lambda self: self.__purge_keys, set_purge_keys)
 
     def __update_tutcode_rule_tree(self):
         rulename = RULE_NAMES[self.__tutcode_rule]
@@ -394,7 +374,16 @@ class Context(object):
         True if the event was handled internally (otherwise False),
         and OUTPUT is a committable string (if any).'''
         key = Key(keystr)
-        if str(key) in self.__cancel_keys:
+
+        # print "input_mode", self.__current_state().input_mode, str(key)
+        if self.__current_state().input_mode == INPUT_MODE_LATIN:
+            if str(key) in self.on_keys:
+                self.activate_input_mode(INPUT_MODE_HIRAGANA)
+                return (True, u'')
+            if self.dict_edit_level() <= 0:
+                return (False, u'')
+
+        if str(key) in self.cancel_keys:
             if self.dict_edit_level() > 0 and \
                     self.__current_state().conv_state == CONV_STATE_NONE:
                 self.__abort_dict_edit()
@@ -411,16 +400,26 @@ class Context(object):
                 self.__current_state().conv_state = CONV_STATE_START
             return (True, u'')
 
-        if str(key) in self.__backspace_keys:
+        if str(key) in self.backspace_keys:
             return self.delete_char()
 
         if self.__current_state().conv_state == CONV_STATE_NONE:
-            if self.dict_edit_level() > 0 and str(key) in self.__commit_keys:
+            if self.dict_edit_level() > 0 and str(key) in self.commit_keys:
                 return (True, self.__leave_dict_edit())
+
+            if str(key) in self.off_keys and \
+                    self.__current_state().input_mode != INPUT_MODE_LATIN:
+                self.activate_input_mode(INPUT_MODE_LATIN)
+                return (True, u'')
 
             # Ignore ctrl+key and non-ASCII characters.
             if self.__key_is_ctrl(key):
                 return (False, u'')
+
+            if self.__current_state().input_mode == INPUT_MODE_LATIN and \
+                    self.dict_edit_level() > 0:
+                self.__current_state().dict_edit_output += key.letter
+                return (True, u'')
 
             output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
@@ -450,7 +449,7 @@ class Context(object):
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_START:
-            if str(key) in self.__commit_keys:
+            if str(key) in self.commit_keys:
                 output = self.kakutei()
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
@@ -459,17 +458,28 @@ class Context(object):
 
             # If midasi is empty, switch back to CONV_STATE_NONE
             # instead of CONV_STATE_SELECT.
-            if str(key) in self.__conv_keys and \
-                    len(self.__current_state().rom_kana_state[0]) == 0:
+            if str(key) in self.conv_keys and \
+                    len(self.__current_state().rom_kana_state[0]) == 0 and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
                 self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
 
             # Start mazegaki conversion.
-            if str(key) in self.__conv_keys:
+            if str(key) in self.conv_keys and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
                 self.__current_state().conv_state = CONV_STATE_SELECT
                 midasi = self.__current_state().rom_kana_state[0]
                 self.__activate_candidate_selector(midasi)
                 return (True, u'')
+
+            if str(key) in self.off_keys:
+                self.reset()
+                self.activate_input_mode(INPUT_MODE_LATIN)
+                return (True, u'')
+
+            # Ignore ctrl+key and non-ASCII characters.
+            if self.__key_is_ctrl(key):
+                return (False, u'')
 
             # If in abbrev mode, just append the letter to the output.
             if self.__current_state().abbrev:
@@ -478,10 +488,6 @@ class Context(object):
                      u'',
                      self.__tutcode_rule_tree)
                 return (True, u'')
-
-            # Ignore ctrl+key and non-ASCII characters.
-            if self.__key_is_ctrl(key):
-                return (False, u'')
 
             output, pending, tree = \
                 self.__convert_kana(key, self.__current_state().rom_kana_state)
@@ -494,17 +500,17 @@ class Context(object):
             return (True, u'')
 
         elif self.__current_state().conv_state == CONV_STATE_SELECT:
-            if str(key) in self.__next_keys:
+            if str(key) in self.next_keys:
                 index = self.__candidate_selector.index()
                 if self.next_candidate() is None:
                     self.__candidate_selector.set_index(index)
                     self.__enter_dict_edit()
                 return (True, u'')
-            elif str(key) in self.__prev_keys:
+            elif str(key) in self.prev_keys:
                 if self.previous_candidate() is None:
                     self.__current_state().conv_state = CONV_STATE_START
                 return (True, u'')
-            elif str(key) in self.__purge_keys:
+            elif str(key) in self.purge_keys:
                 self.__usrdict.purge_candidate(self.__current_state().midasi,
                                                self.__candidate_selector.candidate()[0])
                 input_mode = self.__current_state().input_mode
@@ -517,7 +523,7 @@ class Context(object):
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
                     output = u''
-                if str(key) in self.__commit_keys:
+                if str(key) in self.commit_keys:
                     return (True, output)
                 return (True, output + self.press_key(str(key))[1])
 
@@ -560,10 +566,7 @@ class Context(object):
         tree = self.__tutcode_rule_tree
         output, pending, _tree = state
         if pending:
-            pending = pending[:-1]
-            for letter in pending:
-                tree = tree[letter]
-            return (output, pending, tree)
+            return (output, u'', tree) # clear pending like tc2
         elif output:
             return (output[:-1], u'', tree)
 
@@ -651,8 +654,8 @@ class Context(object):
         '''Return a tuple representing the current preedit text.  The
 format of the tuple is (PROMPT, PREFIX, WORD, SUFFIX).
 
-For example, in okuri-ari conversion (in dict-edit mode level 2) the
-elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
+For example, in mazegaki conversion (in dict-edit mode level 2) the
+elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         if self.dict_edit_level() > 0:
             prompt = self.__dict_edit_prompt()
             prefix = self.__current_state().dict_edit_output

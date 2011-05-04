@@ -1,17 +1,28 @@
 {
-    "page_size": 10,
-    "conv_keys": ["ctrl+n"],
-    "next_keys": ["ctrl+n"],
-    "commit_keys": ["ctrl+j", "ctrl+m", "return"],
+    "": "this is comment (//comment or /*comment*/ causes ValueError)",
+    "": "configuration keys: /usr/share/ibus-tutcode/setup/config.py",
+
+    "": "tutcode_rule: 0=tutcode, 1=tcode, 2=trycode",
+    "tutcode_rule": 0,
+    "use_with_vi": true,
+    "vi_escape_keys": ["escape", "ctrl+[", "ctrl+3"],
+    "on_keys": ["ctrl+;"],
+    "off_keys": ["ctrl+;"],
+
     "custom_tutcode_rule": {
+        "": "for tutcode: replace symbols",
         "w ": "〜",
         "s ": "―",
         "k ": "〈",
         "l ": "〉",
         "x ": "■",
         "v ": "●",
+
+        "": "for tutcode: swap dlu and dldu",
         "dlu": ["ヅ", "づ"],
         "dldu": ["ッ", "っ"],
+
+        "": "for tutcode: add rules",
         "ali": "捗",
         "alo": "繋"
     }
