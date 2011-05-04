@@ -613,8 +613,8 @@ class Context(object):
         '''Return a tuple representing the current preedit text.  The
 format of the tuple is (PROMPT, PREFIX, WORD, SUFFIX).
 
-For example, in okuri-ari conversion (in dict-edit mode level 2) the
-elements will be "[[DictEdit]] かんが*え ", "▽", "かんが", "*え" .'''
+For example, in mazegaki conversion (in dict-edit mode level 2) the
+elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         if self.dict_edit_level() > 0:
             prompt = self.__dict_edit_prompt()
             prefix = self.__current_state().dict_edit_output
