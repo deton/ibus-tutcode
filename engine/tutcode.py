@@ -531,11 +531,23 @@ class Context(object):
 
         elif self.__current_state().conv_state == CONV_STATE_BUSHU:
             if str(key) in self.commit_keys:
-                output = self.kakutei()
-                if self.dict_edit_level() > 0:
-                    self.__current_state().dict_edit_output += output
+                output = self.__current_state().rom_kana_state[0]
+                i = output.rfind(u'▲')
+                if i != -1:
+                    output = output[:i] + output[i+1:] # commit last bushu
+                    output = self.convert_bushu(output)
+                if len(output) == 0 or output[0] != u'▲': # toplevel
+                    input_mode = self.__current_state().input_mode
+                    self.reset()
+                    self.activate_input_mode(input_mode)
+                    if self.dict_edit_level() > 0:
+                        self.__current_state().dict_edit_output += output
+                        return (True, u'')
+                    return (True, output)
+                else:
+                    self.__current_state().rom_kana_state = (output, u'',
+                            self.__tutcode_rule_tree)
                     return (True, u'')
-                return (True, output)
 
             # Ignore mazegaki conversion keys.
             if str(key) in self.conv_keys and \
