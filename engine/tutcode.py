@@ -528,7 +528,7 @@ class Context(object):
                 return (True, output + self.press_key(str(key))[1])
 
         elif self.__current_state().conv_state == CONV_STATE_BUSHU:
-            if str(key) in self.__commit_keys:
+            if str(key) in self.commit_keys:
                 output = self.kakutei()
                 if self.dict_edit_level() > 0:
                     self.__current_state().dict_edit_output += output
@@ -537,13 +537,20 @@ class Context(object):
 
             # If midasi is empty, switch back to CONV_STATE_NONE
             # instead of CONV_STATE_SELECT.
-            if str(key) in self.__conv_keys and \
-                    len(self.__current_state().rom_kana_state[0]) == 0:
+            if str(key) in self.conv_keys and \
+                    len(self.__current_state().rom_kana_state[0]) == 0 and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
                 self.__current_state().conv_state = CONV_STATE_NONE
                 return (True, u'')
 
             # Ignore mazegaki conversion keys.
-            if str(key) in self.__conv_keys:
+            if str(key) in self.conv_keys and \
+                    len(self.__current_state().rom_kana_state[1]) == 0:
+                return (True, u'')
+
+            if str(key) in self.off_keys:
+                self.reset()
+                self.activate_input_mode(INPUT_MODE_LATIN)
                 return (True, u'')
 
             # Ignore ctrl+key and non-ASCII characters.
@@ -557,7 +564,7 @@ class Context(object):
                     self.__toggle_kana_mode()
                 # ignore mazegaki/bushu start
                 pending = u''
-            elif len(output) >= 2
+            elif len(output) >= 2:
                 output = self.__convert_bushu(output)
             self.__current_state().rom_kana_state = (output, pending, tree)
             return (True, u'')
