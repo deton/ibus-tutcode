@@ -212,6 +212,9 @@ class TestTUTCode(unittest.TestCase):
         # addition by parts
         output = self.__tutcode.convert_bushu(u'▲性語')
         self.assertEqual(output, u'悟')
+        # subtraction by parts
+        output = self.__tutcode.convert_bushu(u'▲襲製')
+        self.assertEqual(output, u'龍')
 
 if __name__ == '__main__':
     unittest.main()

@@ -827,7 +827,15 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         if output:
             return output
 
-        #TODO
+        # subtraction by parts
+        if tc11 and tc11 == tc21 and _isnewchar(tc12):
+            return tc12
+        if tc11 and tc11 == tc22 and _isnewchar(tc12):
+            return tc12
+        if tc12 and tc12 == tc21 and _isnewchar(tc11):
+            return tc11
+        if tc12 and tc12 == tc22 and _isnewchar(tc11):
+            return tc11
         return None
 
     def __convert_bushu_compose(self, c1, c2):
