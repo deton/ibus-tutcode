@@ -28,6 +28,7 @@ engine_tutcode_PYTHON = \
 	tutcode_rule.py \
 	tcode_rule.py \
 	trycode_rule.py \
+	tutcode_bushudic.py \
 	$(NULL)
 engine_tutcodedir = $(pkgdatadir)/engine
 

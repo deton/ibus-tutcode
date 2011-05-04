@@ -183,5 +183,25 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(output, u'')
         self.assertEqual(self.__tutcode.preedit, u'▽A')
 
+    def testbushu(self):
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'u')
+        self.__tutcode.press_key(u'q')
+        self.assertEqual(self.__tutcode.preedit, u'▲口')
+        self.__tutcode.press_key(u'b')
+        handled, output = self.__tutcode.press_key(u'a')
+        self.assertTrue(handled)
+	self.assertEqual(output, u'味')
+
+    def testbushuconv(self):
+	output = self.__tutcode.convert_bushu(u'▲言▲▲西一')
+        self.assertEqual(output, u'▲言▲襾')
+	output = self.__tutcode.convert_bushu(u'▲言▲襾早')
+        self.assertEqual(output, u'譚')
+
 if __name__ == '__main__':
     unittest.main()

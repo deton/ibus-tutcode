@@ -561,7 +561,7 @@ class Context(object):
                 # ignore mazegaki start
                 pending = u''
             elif pending == u'':
-                output = self.__convert_bushu(output)
+                output = self.convert_bushu(output)
                 if output[0] != u'▲':
                     input_mode = self.__current_state().input_mode
                     self.reset()
@@ -738,12 +738,12 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         elif self.__current_state().input_mode == INPUT_MODE_KATAKANA:
             return katakana
 
-    def __convert_bushu(self, str):
+    def convert_bushu(self, str):
         m = re.match(u'(.*)▲([^▲])([^▲])$', str)
         if m:
             kanji = self.__convert_bushu_char(m.group(2), m.group(3))
             if kanji:
-                return self.__convert_bushu(m.group(1) + kanji)
+                return self.convert_bushu(m.group(1) + kanji)
             else:
                 return str[:-1]
         else:
@@ -753,6 +753,16 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         output = self.__convert_bushu_compose(c1, c2)
         if output:
             return output
+        a1 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR[c1]
+        a2 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR[c2]
+        if a1 or a2:
+            if a1:
+                c1 = a1
+            if a2:
+                c2 = a2
+            output = self.__convert_bushu_compose(c1, c2)
+            if output:
+                return output
         #TODO
         return None
 
