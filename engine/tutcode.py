@@ -591,7 +591,9 @@ class Context(object):
         if pending:
             return (output, u'', tree) # clear pending like tc2
         elif output:
-            return (output[:-1], u'', tree)
+            output = output[:-1]
+            if output:
+                return (output, u'', tree)
 
     def delete_char(self):
         '''Delete a character at the end of the buffer.'''
@@ -608,7 +610,8 @@ class Context(object):
             if state:
                 self.__current_state().rom_kana_state = state
                 return (True, u'')
-        if self.__current_state().conv_state == CONV_STATE_START:
+        if self.__current_state().conv_state in (CONV_STATE_START,
+                                                 CONV_STATE_BUSHU):
             input_mode = self.__current_state().input_mode
             self.reset()
             self.activate_input_mode(input_mode)
