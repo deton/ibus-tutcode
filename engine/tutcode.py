@@ -796,6 +796,37 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         if tc22 == c1 and _isnewchar(tc21):
             return tc21
 
+        # addition by parts
+        def _compose_newchar(i1, i2):
+            nc = self.__convert_bushu_compose(i1, i2)
+            if _isnewchar(nc):
+                return nc
+            return None
+        output = _compose_newchar(c1, tc22)
+        if output:
+            return output
+        output = _compose_newchar(tc11, c2)
+        if output:
+            return output
+        output = _compose_newchar(c1, tc21)
+        if output:
+            return output
+        output = _compose_newchar(tc12, c2)
+        if output:
+            return output
+        output = _compose_newchar(tc11, tc22)
+        if output:
+            return output
+        output = _compose_newchar(tc11, tc21)
+        if output:
+            return output
+        output = _compose_newchar(tc12, tc22)
+        if output:
+            return output
+        output = _compose_newchar(tc12, tc21)
+        if output:
+            return output
+
         #TODO
         return None
 
