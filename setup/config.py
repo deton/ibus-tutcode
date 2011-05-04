@@ -1,3 +1,6 @@
+# vim:set et sts=4 sw=4:
+# -*- coding: utf-8 -*-
+
 from __future__ import with_statement
 import ibus
 import os, os.path, sys
@@ -49,7 +52,7 @@ class Config:
             with open(config_path, 'r') as f:
                 self.__config_from_file = json.load(f)
         except:
-            print "Can't read config file: %s" % self.__config_path_unexpanded
+            print "Can't read config file:", self.__config_path_unexpanded, sys.exc_info()[:1]
             self.__config_from_file = dict()
         self.fetch_all()
 

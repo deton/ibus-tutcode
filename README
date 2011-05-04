@@ -23,6 +23,7 @@ $ sudo make install
 * Configuration
 
 Use configuration file located at ~/.config/ibus-tutcode.json.
+(note: //comment causes ValueError)
 
 * How to report bugs
 
