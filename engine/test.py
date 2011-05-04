@@ -1,3 +1,4 @@
+# vim:set et sts=4 sw=4:
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
@@ -195,13 +196,16 @@ class TestTUTCode(unittest.TestCase):
         self.__tutcode.press_key(u'b')
         handled, output = self.__tutcode.press_key(u'a')
         self.assertTrue(handled)
-	self.assertEqual(output, u'味')
+        self.assertEqual(output, u'味')
 
     def testbushuconv(self):
-	output = self.__tutcode.convert_bushu(u'▲言▲▲西一')
+        output = self.__tutcode.convert_bushu(u'▲言▲▲西一')
         self.assertEqual(output, u'▲言▲襾')
-	output = self.__tutcode.convert_bushu(u'▲言▲襾早')
+        output = self.__tutcode.convert_bushu(u'▲言▲襾早')
         self.assertEqual(output, u'譚')
+        # alternative char
+        output = self.__tutcode.convert_bushu(u'▲ア可')
+        self.assertEqual(output, u'阿')
 
 if __name__ == '__main__':
     unittest.main()

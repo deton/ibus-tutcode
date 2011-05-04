@@ -753,8 +753,8 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         output = self.__convert_bushu_compose(c1, c2)
         if output:
             return output
-        a1 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR[c1]
-        a2 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR[c2]
+        a1 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR.get(c1)
+        a2 = tutcode_bushudic.TUTCODE_BUSHUDIC_ALTCHAR.get(c2)
         if a1 or a2:
             if a1:
                 c1 = a1
