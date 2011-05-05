@@ -591,9 +591,7 @@ class Context(object):
         if pending:
             return (output, u'', tree) # clear pending like tc2
         elif output:
-            output = output[:-1]
-            if output:
-                return (output, u'', tree)
+            return (output[:-1], u'', tree)
         return None
 
     def delete_char(self):
@@ -608,7 +606,11 @@ class Context(object):
         if self.__current_state().rom_kana_state:
             state = self.__delete_char_from_rom_kana_state(
                 self.__current_state().rom_kana_state)
-            if state:
+            if state and not (
+                    # for CONV_STATE_BUSHU, if first '▲' in output is deleted,
+                    # reset conv_state
+                    self.__current_state().conv_state == CONV_STATE_BUSHU and
+                    state[0] == u''):
                 self.__current_state().rom_kana_state = state
                 return (True, u'')
         if self.__current_state().conv_state in (CONV_STATE_START,
