@@ -70,6 +70,20 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
         self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_HIRAGANA)
+        # HIRAGANA to LATIN
+        handled, output = self.__tutcode.press_key(u'ctrl+\\')
+        self.assert_(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
+        self.assertEqual(self.__tutcode.preedit, u'')
+        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_LATIN)
+        # LATIN to HIRAGANA
+        handled, output = self.__tutcode.press_key(u'ctrl+\\')
+        self.assert_(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__tutcode.conv_state, tutcode.CONV_STATE_NONE)
+        self.assertEqual(self.__tutcode.preedit, u'')
+        self.assertEqual(self.__tutcode.input_mode, tutcode.INPUT_MODE_HIRAGANA)
 
     def testromkana(self):
         self.__tutcode.reset()
