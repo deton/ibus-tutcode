@@ -120,6 +120,23 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.preedit, u'▽あい')
         self.__tutcode.press_key(u' ')
         self.assertEqual(self.__tutcode.preedit, u'▼娃')
+        self.__tutcode.press_key(u' ')
+        self.assertEqual(self.__tutcode.preedit, u'▼哀')
+        # space for yomi. not start conversion
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'j')
+        self.__tutcode.press_key(u'g')
+        self.__tutcode.press_key(u'k')
+        self.__tutcode.press_key(u'e')
+        self.__tutcode.press_key(u' ')
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'u')
+        self.assertEqual(self.__tutcode.preedit, u'▽らーゆ')
+        self.__tutcode.press_key(u' ')
+        self.assertEqual(self.__tutcode.preedit, u'▼辣油')
 
     def testtcode(self):
         self.__tutcode.reset()
