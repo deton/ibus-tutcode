@@ -16,7 +16,7 @@
 			<language>ja</language>
 			<license>GPL</license>
 			<author>KIHARA Hideto &lt;deton@m1.interq.or.jp&gt;</author>
-			<icon>${pkgdatadir}/icons/ibus-tutcode.png</icon>
+			<icon>${pkgdatadir}/icons/ibus-tutcode.svg</icon>
 			<layout>jp</layout>
 			<longname>TUTCode</longname>
 			<description>TUT-Code Input Method</description>
