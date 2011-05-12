@@ -60,14 +60,14 @@ class Config:
         self.fetch_all()
 
     def fetch_all(self):
-        for name in self.__keys():
+        for name in self.__keys:
             # print 'get_value engine/tutcode/%s' % name
             value = self.__config.get_value('engine/tutcode', name, None)
             if value is not None:
                 self.__modified[name] = value
 
     def commit_all(self):
-        for name in self.__keys():
+        for name in self.__keys:
             value = self.__modified.get(name)
             if value is not None:
                 # print 'set_value engine/tutcode/%s' % name
