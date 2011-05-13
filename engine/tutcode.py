@@ -344,13 +344,6 @@ class Context(object):
             self.__current_state().conv_state = CONV_STATE_START
             self.__enter_dict_edit()
 
-    def __rom_kana_key_is_acceptable(self, key):
-        if self.__current_state().rom_kana_state is None:
-            return False
-        output, pending, tree = self.__current_state().rom_kana_state
-        return len(pending) > 0 and \
-            key.letter in self.__current_state().rom_kana_state[2]
-
     def __key_is_ctrl(self, key):
         '''key is ctrl+key and non-ASCII characters?'''
         if key.is_ctrl() or \
