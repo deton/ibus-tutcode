@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(os.getenv('IBUS_TUTCODE_PKGDATADIR'), 'engine'))
 import tutcode
 
 class Config:
-    __sysdict_path_candidates = ('/usr/share/tc/mazegaki.dic',
+    __sysdict_path_candidates = ('/usr/share/t-code/mazegaki.dic',
                                  '/usr/local/share/tc/mazegaki.dic')
     __usrdict_path_unexpanded = '~/.mazegaki-ibus.dic'
     __config_path_unexpanded = '~/.config/ibus-tutcode.json'
