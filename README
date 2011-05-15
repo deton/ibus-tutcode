@@ -23,7 +23,28 @@ $ sudo make install
 * Configuration
 
 Use configuration file located at ~/.config/ibus-tutcode.json.
-(note: //comment causes ValueError)
+Use ibus-tutcode.json.example as a template.
+
+ "page_size": Number of candidates on a page: 10
+ "pagination_start": Candidate window pagination start: 4
+ "tutcode_rule": Code table(0=TUT-Code, 1=T-Code, 2=Try-Code): 0
+ "initial_input_mode": Initial input mode(0=Latin, 1=Hiragana, 2=Katakana): 1
+ "use_with_vi": Change to latin mode on escape key: false
+ "use_mmap": Use mmap to access system dictionary: true
+ "sysdict_paths": Paths to system dictionary:["/usr/share/t-code/mazegaki.dic"]
+                                        or ["/usr/local/share/tc/mazegaki.dic"]
+ "usrdict": Path to user dictionary: "~/.mazegaki-ibus.dic"
+ "custom_tutcode_rule": Customization of code table: {}
+ "on_keys": Keys to Hiragana mode: ["ctrl+\\"]
+ "off_keys": Keys to latin mode: ["ctrl+\\"]
+ "cancel_keys": Cancel keys: ["ctrl+g", "ctrl+u"]
+ "backspace_keys": Backspace keys: ["ctrl+h", "backspace"]
+ "conv_keys": Keys to begin conversion on Mazegaki: [" ", "ctrl+n"]
+ "next_keys": Keys for next candidate: [" ", "ctrl+n"]
+ "prev_keys": Keys for previous candidate: ["ctrl+p"]
+ "commit_keys": Keys to commit: ["ctrl+m", "return"]
+ "purge_keys": Keys to purge candidate: ["!"]
+ "vi_escape_keys": Escape keys for use_with_vi: ["escape", "ctrl+["]
 
 * How to report bugs
 
