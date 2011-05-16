@@ -20,7 +20,7 @@
 
 # if not 1, append datestamp to the version number.
 m4_define([package_name], [ibus-tutcode])
-m4_define([ibus_released], [0])
+m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [0])
 m4_define([ibus_micro_version], [0])
