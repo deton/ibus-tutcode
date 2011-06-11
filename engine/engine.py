@@ -465,13 +465,11 @@ class Engine(ibus.EngineBase):
         # self.commit_text(ibus.Text(u''))
         self.__lookup_table.clean()
         self.__update()
-        self.reset()
+        self.__tutcode.reset()
 
     def reset(self):
-        # keep input_mode for backspace or ctrl+a in INPUT_MODE_LATIN.
-        input_mode = self.__tutcode.input_mode
         self.__tutcode.reset()
-        self.__tutcode.activate_input_mode(input_mode)
+        self.__tutcode.activate_input_mode(self.__input_mode)
 
     def enable(self):
         self.__tutcode.reset()
