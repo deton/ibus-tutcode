@@ -380,6 +380,8 @@ class Context(object):
             if str(key) in self.on_keys:
                 self.activate_input_mode(INPUT_MODE_HIRAGANA)
                 return (True, u'')
+            if str(key) in self.off_keys:
+                return (True, u'') # not pass to application
             if self.dict_edit_level() <= 0:
                 return (False, u'')
 
@@ -414,10 +416,11 @@ class Context(object):
             if self.dict_edit_level() > 0 and str(key) in self.commit_keys:
                 return (True, self.__leave_dict_edit())
 
-            if str(key) in self.off_keys and \
-                    self.__current_state().input_mode != INPUT_MODE_LATIN:
+            if str(key) in self.off_keys:
                 self.activate_input_mode(INPUT_MODE_LATIN)
                 return (True, u'')
+            if str(key) in self.on_keys:
+                return (True, u'') # not pass to application
 
             # Ignore ctrl+key and non-ASCII characters.
             if self.__key_is_ctrl(key):
