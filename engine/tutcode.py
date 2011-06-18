@@ -344,6 +344,12 @@ class Context(object):
             self.__current_state().conv_state = CONV_STATE_START
             self.__enter_dict_edit()
 
+    def __rom_kana_has_pending(self):
+        if self.__current_state().rom_kana_state is None:
+            return False
+        output, pending, tree = self.__current_state().rom_kana_state
+        return len(pending) > 0
+
     def __key_is_ctrl(self, key):
         '''key is ctrl+key and non-ASCII characters?'''
         if key.is_ctrl() or \
@@ -378,12 +384,19 @@ class Context(object):
                 return (False, u'')
 
         if str(key) in self.cancel_keys:
+            handled = True
             if self.dict_edit_level() > 0 and \
                     self.__current_state().conv_state == CONV_STATE_NONE:
                 self.__abort_dict_edit()
             elif self.__current_state().conv_state in (CONV_STATE_NONE,
                                                        CONV_STATE_START,
                                                        CONV_STATE_BUSHU):
+                # Don't handle ctrl+g here if no rom-kana conversion
+                # is in progress.  This allows Firefox search shortcut
+                # ctrl+g (ibus-skk Issue#35).
+                if self.__current_state().conv_state == CONV_STATE_NONE and \
+                        not self.__rom_kana_has_pending():
+                    handled = False
                 input_mode = self.__current_state().input_mode
                 self.reset()
                 self.activate_input_mode(input_mode)
@@ -392,7 +405,7 @@ class Context(object):
                 self.__current_state().midasi = None
                 self.__candidate_selector.set_candidates(list())
                 self.__current_state().conv_state = CONV_STATE_START
-            return (True, u'')
+            return (handled, u'')
 
         if str(key) in self.backspace_keys:
             return self.delete_char()

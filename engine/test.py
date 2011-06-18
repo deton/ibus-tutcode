@@ -105,6 +105,16 @@ class TestTUTCode(unittest.TestCase):
         self.assertEqual(self.__tutcode.preedit, u'')
         self.assertEqual(self.__tutcode.press_key(u' '), (True, u'、'))
         self.assertEqual(self.__tutcode.preedit, u'')
+        # cancel rom-kana conversion
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'l')
+        self.assertEqual(self.__tutcode.press_key(u'ctrl+g'), (True, u''))
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'l')
+        self.assertEqual(self.__tutcode.press_key(u'k'), (True, u'ゃ'))
+        self.assertEqual(self.__tutcode.press_key(u'ctrl+g'), (False, u''))
 
     def testmazegaki(self):
         self.__tutcode.reset()
