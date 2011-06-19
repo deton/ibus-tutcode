@@ -420,6 +420,7 @@ class Context(object):
                 self.activate_input_mode(INPUT_MODE_LATIN)
                 return (True, u'')
             if str(key) in self.on_keys:
+                self.activate_input_mode(INPUT_MODE_HIRAGANA)
                 return (True, u'') # not pass to application
 
             # Ignore ctrl+key and non-ASCII characters.
