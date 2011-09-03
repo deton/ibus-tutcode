@@ -1,0 +1,6 @@
+* 1.0.1 (2011-09-03)
+** Fix behavior when on_keys and off_keys are different
+** Don't handle ctrl+g in non-converting state (ibus-skk Issue#35)
+
+* 1.0.0 (2011-05-16)
+** Initial release

@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus-tutcode 0.0.1\n"
+"Project-Id-Version: ibus-tutcode 1.0.1\n"
 "Report-Msgid-Bugs-To: http://github.com/deton/ibus-tutcode/issues\n"
-"POT-Creation-Date: 2011-05-04 20:18+0900\n"
+"POT-Creation-Date: 2011-09-03 12:17+0900\n"
 "PO-Revision-Date: 2011-04-24 10:42+0900\n"
 "Last-Translator: KIHARA Hideto <deton@m1.interq.or.jp>\n"
 "Language-Team: Japanese\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: engine/engine.py:159
+#: engine/engine.py:160
 msgid "DictEdit"
 msgstr "辞書登録"
 
-#: engine/engine.py:186
+#: engine/engine.py:187
 msgid "Switch input mode"
 msgstr "入力モード切替"
 
-#: engine/engine.py:192
+#: engine/engine.py:193
 msgid "Latin"
 msgstr "英数"
 
-#: engine/engine.py:195
+#: engine/engine.py:196
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: engine/engine.py:198
+#: engine/engine.py:199
 msgid "Katakana"
 msgstr "カタカナ"
