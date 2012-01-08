@@ -23,6 +23,8 @@
         "dldu": ["ッ", "っ"],
 
         "": "for tutcode: add rules",
+        "": "0=TOGGLE_KANA, 1=MAZEGAKI, 2=ABBREV, 3=BUSHU, 4=BUSHU_POSTFIX",
+        "ald": 4,
         "ali": "捗",
         "alo": "繋"
     }
