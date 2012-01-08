@@ -114,7 +114,6 @@ class SurroundingText(tutcode.SurroundingText):
         self.__engine = engine
 
     def get_surrounding_text(self):
-        # TODO: support old ibus which does not have get_surrounding_text()
         text, cursor_pos = self.__engine.get_surrounding_text()
         return (text.text, cursor_pos)
 
@@ -161,7 +160,10 @@ class Engine(ibus.EngineBase):
                                                       self.__select_keys,
                                                       page_size,
                                                       pagination_start)
-        self.__surrounding_text = SurroundingText(self)
+        if hasattr(self, 'get_surrounding_text'):
+            self.__surrounding_text = SurroundingText(self)
+        else:
+            self.__surrounding_text = None
         usrdict = skkdict.UsrDict(self.config.usrdict_path)
         self.__tutcode = tutcode.Context(usrdict, self.sysdict,
                                  self.__candidate_selector,
@@ -490,7 +492,8 @@ class Engine(ibus.EngineBase):
         self.__tutcode.activate_input_mode(self.__initial_input_mode)
         # suppress activate_input_mode() in focus_in
         self.__suspended_mode = None
-        self.get_surrounding_text() # enable surrounding text
+        if hasattr(self, 'get_surrounding_text'):
+            self.get_surrounding_text() # enable surrounding text
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)

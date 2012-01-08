@@ -804,7 +804,7 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
             text = self.__current_state().dict_edit_output[-nchars:]
             if len(text) == nchars:
                 return text
-        else:
+        elif self.__surrounding_text:
             text, cursor_pos = self.__surrounding_text.get_surrounding_text()
             if cursor_pos >= nchars:
                 return text[(cursor_pos - nchars):cursor_pos]
@@ -814,7 +814,7 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
         if self.dict_edit_level() > 0:
             self.__current_state().dict_edit_output = \
                 self.__current_state().dict_edit_output[:-nchars]
-        else:
+        elif self.__surrounding_text:
             self.__surrounding_text.delete_surrounding_text(-nchars, nchars)
 
     def __convert_bushu_postfix(self):
