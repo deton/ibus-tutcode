@@ -522,6 +522,12 @@ class Context(object):
             if not isinstance(pending, unicode):
                 if pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
+                elif pending == tutcode_command.COMMAND_BUSHU_POSTFIX:
+                    if len(output) >= 2:
+                        kanji = self.__convert_bushu_char(output[-2],
+                                output[-1])
+                        if kanji and len(kanji) > 0:
+                            output = output[:-2] + kanji
                 # ignore mazegaki/bushu start
                 pending = u''
             self.__current_state().rom_kana_state = (output, pending, tree)
