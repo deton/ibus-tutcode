@@ -57,7 +57,7 @@ tutcode.xml: tutcode.xml.in
 		eval "echo \"$${s}\""; \
 	) > $@
 
-test:
+check:
 	$(ENV) \
 		DBUS_DEBUG=true \
 		IBUS_TUTCODE_PKGDATADIR=$(abs_top_srcdir) \

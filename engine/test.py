@@ -33,7 +33,8 @@ class TestTUTCode(unittest.TestCase):
 
         self.__tutcode = tutcode.Context(usrdict=skkdict.UsrDict(usrdict_path),
                                  sysdict=skkdict.SysDict(sysdict_path),
-                                 candidate_selector=tutcode.CandidateSelector())
+                                 candidate_selector=tutcode.CandidateSelector(),
+                                 surrounding_text=None)
 
     def testusrdict(self):
         usrdict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
