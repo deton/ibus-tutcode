@@ -5,6 +5,7 @@ TUTCODE_RULE = {
     u'\'': tutcode_command.COMMAND_TOGGLE_KANA,
     u'alj': tutcode_command.COMMAND_MAZEGAKI,
     u'ala': tutcode_command.COMMAND_BUSHU,
+    u'ald': tutcode_command.COMMAND_BUSHU_POSTFIX,
     u'al/': tutcode_command.COMMAND_ABBREV,
     u'rk': (u'ア', u'あ'),
     u'ri': (u'イ', u'い'),

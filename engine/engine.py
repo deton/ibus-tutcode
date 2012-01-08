@@ -109,6 +109,18 @@ class CandidateSelector(tutcode.CandidateSelector):
         else:
             raise IndexError('invalid key position %d' % pos)
 
+class SurroundingText(tutcode.SurroundingText):
+    def __init__(self, engine):
+        self.__engine = engine
+
+    def get_surrounding_text(self):
+        # TODO: support old ibus which does not have get_surrounding_text()
+        text, cursor_pos = self.__engine.get_surrounding_text()
+        return (text.text, cursor_pos)
+
+    def delete_surrounding_text(self, offset_from_cursor, nchars):
+        self.__engine.delete_surrounding_text(offset_from_cursor, nchars)
+
 class Engine(ibus.EngineBase):
     config = None
     sysdict = None
@@ -149,9 +161,11 @@ class Engine(ibus.EngineBase):
                                                       self.__select_keys,
                                                       page_size,
                                                       pagination_start)
+        self.__surrounding_text = SurroundingText(self)
         usrdict = skkdict.UsrDict(self.config.usrdict_path)
         self.__tutcode = tutcode.Context(usrdict, self.sysdict,
-                                 self.__candidate_selector)
+                                 self.__candidate_selector,
+                                 self.__surrounding_text)
         self.__tutcode.tutcode_rule = self.config.get_value('tutcode_rule')
         self.__initial_input_mode = self.config.get_value('initial_input_mode')
         self.__use_with_vi = self.config.get_value('use_with_vi')
@@ -476,6 +490,7 @@ class Engine(ibus.EngineBase):
         self.__tutcode.activate_input_mode(self.__initial_input_mode)
         # suppress activate_input_mode() in focus_in
         self.__suspended_mode = None
+        self.get_surrounding_text() # enable surrounding text
 
     def property_activate(self, prop_name, state):
         # print "PropertyActivate(%s, %d)" % (prop_name, state)

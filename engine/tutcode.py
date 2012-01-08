@@ -132,6 +132,12 @@ class CandidateSelector(object):
         else:
             self.__index = -1
 
+class SurroundingText(object):
+    def get_surrounding_text(self):
+        pass
+    def delete_surrounding_text(self, offset_from_cursor, nchars):
+        pass
+
 class State(object):
     def __init__(self):
         self.reset()
@@ -191,7 +197,7 @@ class Key(object):
         return 'ctrl' in self.__modifiers
 
 class Context(object):
-    def __init__(self, usrdict, sysdict, candidate_selector):
+    def __init__(self, usrdict, sysdict, candidate_selector, surrounding_text):
         '''Create an TUT-Code context.
 
         USRDICT is a user dictionary and SYSDICT is a system dictionary.'''
@@ -200,6 +206,7 @@ class Context(object):
         self.__tutcode_rule = None
         self.__custom_tutcode_rule = dict()
         self.__candidate_selector = candidate_selector
+        self.__surrounding_text = surrounding_text
         self.__state_stack = list()
         self.__state_stack.append(State())
 
@@ -444,6 +451,13 @@ class Context(object):
                 elif pending == tutcode_command.COMMAND_BUSHU:
                     self.__current_state().conv_state = CONV_STATE_BUSHU
                     output += u'▲'
+                elif pending == tutcode_command.COMMAND_BUSHU_POSTFIX:
+                    # TODO: support dict_edit
+                    kanji = self.__convert_bushu_postfix()
+                    if kanji:
+                        self.__current_state().rom_kana_state = (u'', u'',
+                                self.__tutcode_rule_tree)
+                        return (True, kanji)
                 elif pending == tutcode_command.COMMAND_TOGGLE_KANA:
                     self.__toggle_kana_mode()
                 self.__current_state().rom_kana_state = (output, u'', tree)
@@ -776,6 +790,16 @@ elements will be "[[DictEdit]] へきくう ", "▽", "へき", "" .'''
                 return str[:-1]
         else:
             return str
+
+    def __convert_bushu_postfix(self):
+        text, cursor_pos = self.__surrounding_text.get_surrounding_text()
+        if cursor_pos >= 2:
+            kanji = self.__convert_bushu_char(text[cursor_pos - 2],
+                    text[cursor_pos - 1])
+            if kanji and len(kanji) > 0:
+                self.__surrounding_text.delete_surrounding_text(-2, 2)
+                return kanji
+        return None
 
     def __convert_bushu_char(self, c1, c2):
         output = self.__convert_bushu_compose(c1, c2)
