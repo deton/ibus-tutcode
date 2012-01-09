@@ -4,9 +4,32 @@
 from __future__ import with_statement
 import unittest
 import os, os.path
+import tutcode_command
 import tutcode
 import skkdict
 from ibus import modifier
+
+class SurroundingText(tutcode.SurroundingText):
+    def __init__(self):
+        self.__surrounding_text = u''
+        self.__cursor_pos = 0
+
+    def set_surrounding_text(self, text, cursor_pos):
+        self.__surrounding_text = text
+        self.__cursor_pos = cursor_pos
+
+    def get_surrounding_text(self):
+        return (self.__surrounding_text, self.__cursor_pos)
+
+    def delete_surrounding_text(self, offset_from_cursor, nchars):
+        cursor_pos = self.__cursor_pos + offset_from_cursor
+        if cursor_pos >= 0 and len(self.__surrounding_text) - cursor_pos >= nchars:
+            self.__surrounding_text = self.__surrounding_text[:cursor_pos] + \
+                self.__surrounding_text[cursor_pos + nchars:]
+            self.__cursor_pos = cursor_pos
+        else:
+            self.__surrounding_text = u''
+            self.__cursor_pos = 0
 
 class TestTUTCode(unittest.TestCase):
     def setUp(self):
@@ -31,10 +54,11 @@ class TestTUTCode(unittest.TestCase):
                     for line in fp:
                         tp.write(line)
 
+        self.__surrounding_text = SurroundingText()
         self.__tutcode = tutcode.Context(usrdict=skkdict.UsrDict(usrdict_path),
                                  sysdict=skkdict.SysDict(sysdict_path),
                                  candidate_selector=tutcode.CandidateSelector(),
-                                 surrounding_text=None)
+                                 surrounding_text=self.__surrounding_text)
 
     def testusrdict(self):
         usrdict_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -579,6 +603,101 @@ class TestTUTCode(unittest.TestCase):
         # subtraction by parts
         output = self.__tutcode.convert_bushu(u'▲襲製')
         self.assertEqual(output, u'龍')
+
+    def testbushupostfix(self):
+        self.__tutcode.set_custom_tutcode_rule(
+                { u'ald': tutcode_command.COMMAND_BUSHU_POSTFIX })
+        # postfix bushu conversion in mazegaki yomi
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'j')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'd')
+        self.assertEqual(self.__tutcode.preedit, u'▽')
+        self.__tutcode.press_key(u'u')
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'd')
+        self.assertEqual(self.__tutcode.preedit, u'▽口')
+        self.__tutcode.press_key(u'b')
+        self.__tutcode.press_key(u'a')
+        self.assertEqual(self.__tutcode.preedit, u'▽口未')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'd')
+        self.assertEqual(self.__tutcode.preedit, u'▽味')
+        # postfix bushu conversion in dictedit
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'j')
+        self.__tutcode.press_key(u'g')
+        self.__tutcode.press_key(u'k')
+        self.__tutcode.press_key(u'e')
+        self.__tutcode.press_key(u' ')
+        self.__tutcode.press_key(u'/')
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u' ')
+        self.assertEqual(self.__tutcode.preedit, u'[DictEdit] らー油 ')
+        self.__tutcode.press_key(u'u')
+        self.__tutcode.press_key(u'q')
+        self.__tutcode.press_key(u'b')
+        self.__tutcode.press_key(u'a')
+        self.assertEqual(self.__tutcode.preedit, u'[DictEdit] らー油 口未')
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        self.__tutcode.press_key(u'd')
+        self.assertEqual(self.__tutcode.preedit, u'[DictEdit] らー油 味')
+        self.__tutcode.press_key(u'ctrl+g')
+        self.__tutcode.press_key(u'ctrl+g')
+        # postfix bushu conversion using surrounding text API
+        self.__tutcode.reset()
+        self.__tutcode.activate_input_mode(tutcode.INPUT_MODE_HIRAGANA)
+        self.__surrounding_text.set_surrounding_text(u'', 0)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        handled, output = self.__tutcode.press_key(u'd')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__surrounding_text.get_surrounding_text(),
+                (u'', 0))
+        self.__surrounding_text.set_surrounding_text(u'言', 1)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        handled, output = self.__tutcode.press_key(u'd')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'')
+        self.assertEqual(self.__surrounding_text.get_surrounding_text(),
+                (u'言', 1))
+        self.__surrounding_text.set_surrounding_text(u'言西一', 3)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        handled, output = self.__tutcode.press_key(u'd')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'襾')
+        self.assertEqual(self.__surrounding_text.get_surrounding_text(),
+                (u'言', 1))
+        self.__surrounding_text.set_surrounding_text(u'言襾早', 3)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        handled, output = self.__tutcode.press_key(u'd')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'覃')
+        self.assertEqual(self.__surrounding_text.get_surrounding_text(),
+                (u'言', 1))
+        self.__surrounding_text.set_surrounding_text(u'言覃', 2)
+        self.__tutcode.press_key(u'a')
+        self.__tutcode.press_key(u'l')
+        handled, output = self.__tutcode.press_key(u'd')
+        self.assertTrue(handled)
+        self.assertEqual(output, u'譚')
+        self.assertEqual(self.__surrounding_text.get_surrounding_text(),
+                (u'', 0))
 
 if __name__ == '__main__':
     unittest.main()
