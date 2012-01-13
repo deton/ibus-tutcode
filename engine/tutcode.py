@@ -4,7 +4,7 @@
 # ibus-tutcode - The TUT-Code engine for IBus
 # (based on ibus-skk)
 #
-# Copyright (C) 2011 KIHARA Hideto <deton@m1.interq.or.jp>
+# Copyright (C) 2011-2012 KIHARA Hideto <deton@m1.interq.or.jp>
 # Copyright (C) 2009-2010 Daiki Ueno <ueno@unixuser.org>
 #   changed: 2010-04-13 tagomoris <tagomoris@intellilink.co.jp>
 #
