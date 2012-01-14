@@ -1,3 +1,6 @@
+* 1.0.2 (2012-01-14)
+** Postfix bushu conversion using surrounding text API of ibus-1.4.0
+
 * 1.0.1 (2011-09-03)
 ** Fix behavior when on_keys and off_keys are different
 ** Don't handle ctrl+g in non-converting state (ibus-skk Issue#35)
