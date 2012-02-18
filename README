@@ -50,4 +50,9 @@ Use ibus-tutcode.json.example as a template.
 
 Use the issue tracker on GitHub:
 
-http://github.com/deton/ibus-tutcode/issues
+https://github.com/deton/ibus-tutcode/issues
+
+* See Also
+
+ibus-tutcode is based on ibus-skk (prior to libskk)
+https://github.com/ueno/ibus-skk
